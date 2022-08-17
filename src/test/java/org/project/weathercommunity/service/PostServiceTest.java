@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.project.weathercommunity.domain.Post;
 import org.project.weathercommunity.repository.PostRepository;
 import org.project.weathercommunity.request.PostCreate;
+import org.project.weathercommunity.response.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -57,8 +58,11 @@ class PostServiceTest {
                 .build();
         postRepository.save(request);
 
+        // 클라이언트 요구사항
+            // json 응답에서 title값 길이를 최대 10글자로 제한.
+
         // when
-        Post post = postService.get(1L);
+        PostResponse post = postService.get(1L);
 
         // then
         assertNotNull(post);

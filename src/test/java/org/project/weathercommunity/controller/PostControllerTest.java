@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -105,6 +106,27 @@ class PostControllerTest {
         Post post = postRepository.findAll().get(0);
         assertEquals("제목", post.getTitle());
         assertEquals("내용", post.getContent());
+    }
 
+    @Test
+    @DisplayName("글 1개 조회 Controller 테스트")
+    void 글_단건_조회() throws Exception {
+
+        // given
+        Post post = Post.builder()
+                .title("123456789012345")
+                .content("bar")
+                .build();
+
+        postRepository.save(post);
+
+        // expected (when과 then이 섞인 느낌)
+        mockMvc.perform(get("/posts/{postId}", post.getId())
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(post.getId()))
+                .andExpect(jsonPath("$.title").value("123456789012345"))
+                .andExpect(jsonPath("$.content").value("bar"))
+                .andDo(print());
     }
 }
