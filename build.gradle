@@ -28,7 +28,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     runtimeOnly 'com.h2database:h2'
-    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
+    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.79.Final:osx-aarch_64'
 }
 
 tasks.named('test') {

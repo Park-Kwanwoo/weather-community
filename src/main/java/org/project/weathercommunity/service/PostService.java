@@ -6,7 +6,12 @@ import org.project.weathercommunity.domain.Post;
 import org.project.weathercommunity.repository.PostRepository;
 import org.project.weathercommunity.request.PostCreate;
 import org.project.weathercommunity.response.PostResponse;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.Id;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -14,6 +19,15 @@ import org.springframework.stereotype.Service;
 public class PostService {
 
     private final PostRepository postRepository;
+
+    private static PostResponse apply(Post post) {
+        PostResponse response = new PostResponse(
+                post.getId(),
+                post.getTitle(),
+                post.getContent()
+        );
+        return response;
+    }
 
     public void write(PostCreate postCreate) {
         // postCreate -> Entity
@@ -29,12 +43,17 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다."));
 
-        PostResponse response = PostResponse.builder()
+        return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .build();
+    }
 
-        return response;
+    public List<PostResponse> getList() {
+        return postRepository.findAll().stream()
+                .map(PostResponse::new)
+                .collect(Collectors.toList());
+
     }
 }
