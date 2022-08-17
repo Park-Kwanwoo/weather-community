@@ -19,9 +19,14 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/posts")
-    public Map<String, String> post(@RequestBody @Valid PostCreate postCreate) {
+    public void post(@RequestBody @Valid PostCreate postCreate) {
+        // Case1. 저장한 데이터 Entity -> response로 응답하기
+        // Case2. 저장한 데이터의 primary_id -> response로 응답하기
+        //          Client에서는 수신한 id를 글 조회 API를 통해서 데이터를 수신받음
+        // Case3. 응답 필요 없음 -> 클라이언트에서 모든 POST(글) 데이터 context 잘 관리함
+        // Bad Case: 서버에서 -> 반드시 이렇게 한다 (fix)
+        //          -> 서버에서 차라리 유연하게 대응하는게 좋다. -> 코드를 잘 짜야함.
+        //          -> 한 번에 일괄적으로 잘 처리되는 케이스는 X -> 잘 관리하는 형태가 중요
         postService.write(postCreate);
-
-        return Map.of();
     }
 }
