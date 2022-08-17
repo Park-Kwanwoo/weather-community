@@ -5,9 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.domain.Post;
 import org.project.weathercommunity.repository.PostRepository;
 import org.project.weathercommunity.request.PostCreate;
+import org.project.weathercommunity.response.PostResponse;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -25,10 +24,17 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public Post get(Long id) {
+    public PostResponse get(Long id) {
 
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다."));
-        return post;
+
+        PostResponse response = PostResponse.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .build();
+
+        return response;
     }
 }

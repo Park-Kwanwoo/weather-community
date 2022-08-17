@@ -2,13 +2,12 @@ package org.project.weathercommunity.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.project.weathercommunity.domain.Post;
 import org.project.weathercommunity.request.PostCreate;
+import org.project.weathercommunity.response.PostResponse;
 import org.project.weathercommunity.service.PostService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -35,7 +34,9 @@ public class PostController {
      */
 
     @GetMapping("/posts/{postId}")
-    public Post get(@PathVariable(name = "postId") Long id) {
+    public PostResponse get(@PathVariable(name = "postId") Long id) {
+
+        // 응답 클래스 분리
         return postService.get(id);
     }
 }
