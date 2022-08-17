@@ -2,11 +2,10 @@ package org.project.weathercommunity.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.project.weathercommunity.domain.Post;
 import org.project.weathercommunity.request.PostCreate;
 import org.project.weathercommunity.service.PostService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
@@ -28,5 +27,15 @@ public class PostController {
         //          -> 서버에서 차라리 유연하게 대응하는게 좋다. -> 코드를 잘 짜야함.
         //          -> 한 번에 일괄적으로 잘 처리되는 케이스는 X -> 잘 관리하는 형태가 중요
         postService.write(postCreate);
+    }
+
+    /**
+     * /posts -> 글 전체 조회(검색 + 페이징)
+     * /posts/{postId} -> 글 한개만 조회
+     */
+
+    @GetMapping("/posts/{postId}")
+    public Post get(@PathVariable(name = "postId") Long id) {
+        return postService.get(id);
     }
 }

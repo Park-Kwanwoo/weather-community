@@ -7,6 +7,8 @@ import org.project.weathercommunity.repository.PostRepository;
 import org.project.weathercommunity.request.PostCreate;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -21,5 +23,12 @@ public class PostService {
                 .content(postCreate.getContent())
                 .build();
         postRepository.save(post);
+    }
+
+    public Post get(Long id) {
+
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다."));
+        return post;
     }
 }
