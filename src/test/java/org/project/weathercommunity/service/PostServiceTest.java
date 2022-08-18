@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.project.weathercommunity.domain.Post;
 import org.project.weathercommunity.repository.PostRepository;
 import org.project.weathercommunity.request.PostCreate;
+import org.project.weathercommunity.request.PostEdit;
 import org.project.weathercommunity.request.PostSearch;
 import org.project.weathercommunity.response.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,5 +105,61 @@ class PostServiceTest {
         assertEquals(10L, posts.size());
         assertEquals("제목30", posts.get(0).getTitle());
         assertEquals("내용26", posts.get(4).getContent());
+    }
+
+    @Test
+    @DisplayName("글 제목 수정")
+    void 글_제목_수정() {
+
+        // given
+        Post post = Post.builder()
+                .title("수정전")
+                .content("내용")
+                .build();
+
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정후")
+                .content("내용")
+                .build();
+
+        // when
+        postService.edit(post.getId(), postEdit);
+
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+
+        assertEquals("수정후", changedPost.getTitle());
+    }
+
+    @Test
+    @DisplayName("글 내용 수정")
+    void 글_내용_수정() {
+
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용전")
+                .build();
+
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("제목")
+                .content("내용후")
+                .build();
+
+        // when
+        postService.edit(post.getId(), postEdit);
+
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+
+        assertEquals("내용후", changedPost.getContent());
     }
 }
