@@ -3,6 +3,7 @@ package org.project.weathercommunity.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.request.PostCreate;
+import org.project.weathercommunity.request.PostSearch;
 import org.project.weathercommunity.response.PostResponse;
 import org.project.weathercommunity.service.PostService;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +44,7 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getList(@PageableDefault(size = 5) Pageable pageable) {
-        return postService.getList(pageable);
+    public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
+        return postService.getList(postSearch);
     }
 }

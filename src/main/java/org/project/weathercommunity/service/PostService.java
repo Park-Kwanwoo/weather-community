@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.domain.Post;
 import org.project.weathercommunity.repository.PostRepository;
 import org.project.weathercommunity.request.PostCreate;
+import org.project.weathercommunity.request.PostSearch;
 import org.project.weathercommunity.response.PostResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -55,8 +56,8 @@ public class PostService {
                 .build();
     }
 
-    public List<PostResponse> getList(Pageable pageable) {
-        return postRepository.findAll(pageable).stream()
+    public List<PostResponse> getList(PostSearch postSearch) {
+        return postRepository.getList(postSearch).stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
 
