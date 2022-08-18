@@ -41,7 +41,6 @@ public class PostController {
 
     @GetMapping("/posts/{postId}")
     public PostResponse get(@PathVariable(name = "postId") Long id) {
-
         return postService.get(id);
     }
 

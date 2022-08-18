@@ -4,14 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.domain.Post;
 import org.project.weathercommunity.domain.PostEditor;
+import org.project.weathercommunity.exception.PostNotFound;
 import org.project.weathercommunity.repository.PostRepository;
 import org.project.weathercommunity.request.PostCreate;
-import org.project.weathercommunity.request.PostSearch;
 import org.project.weathercommunity.request.PostEdit;
+import org.project.weathercommunity.request.PostSearch;
 import org.project.weathercommunity.response.PostResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,15 +23,6 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    private static PostResponse apply(Post post) {
-        PostResponse response = new PostResponse(
-                post.getId(),
-                post.getTitle(),
-                post.getContent()
-        );
-        return response;
-    }
-
     public void write(PostCreate postCreate) {
         // postCreate -> Entity
         Post post = Post.builder()
@@ -42,9 +33,8 @@ public class PostService {
     }
 
     public PostResponse get(Long id) {
-
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다."));
+                .orElseThrow(PostNotFound::new);
 
         return PostResponse.builder()
                 .id(post.getId())
@@ -63,7 +53,7 @@ public class PostService {
     @Transactional
     public void edit(Long id, PostEdit postedit) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(PostNotFound::new);
 
         PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
 
@@ -76,7 +66,7 @@ public class PostService {
 
     public void delete(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(PostNotFound::new);
 
         postRepository.delete(post);
     }
