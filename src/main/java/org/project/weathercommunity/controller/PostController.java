@@ -2,10 +2,11 @@ package org.project.weathercommunity.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.project.weathercommunity.domain.Post;
 import org.project.weathercommunity.request.PostCreate;
 import org.project.weathercommunity.response.PostResponse;
 import org.project.weathercommunity.service.PostService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -42,8 +43,7 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getList() {
-
-        return postService.getList();
+    public List<PostResponse> getList(@PageableDefault(size = 5) Pageable pageable) {
+        return postService.getList(pageable);
     }
 }

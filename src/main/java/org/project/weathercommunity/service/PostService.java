@@ -6,12 +6,17 @@ import org.project.weathercommunity.domain.Post;
 import org.project.weathercommunity.repository.PostRepository;
 import org.project.weathercommunity.request.PostCreate;
 import org.project.weathercommunity.response.PostResponse;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.Id;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.domain.Sort.*;
+import static org.springframework.data.domain.Sort.Direction.*;
 
 @Slf4j
 @Service
@@ -50,8 +55,8 @@ public class PostService {
                 .build();
     }
 
-    public List<PostResponse> getList() {
-        return postRepository.findAll().stream()
+    public List<PostResponse> getList(Pageable pageable) {
+        return postRepository.findAll(pageable).stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
 
