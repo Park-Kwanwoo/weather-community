@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.project.weathercommunity.domain.Post;
+import org.project.weathercommunity.exception.PostNotFound;
 import org.project.weathercommunity.repository.PostRepository;
 import org.project.weathercommunity.request.PostCreate;
 import org.project.weathercommunity.request.PostEdit;
@@ -16,8 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class PostServiceTest {
@@ -66,10 +66,10 @@ class PostServiceTest {
 
 
         // 클라이언트 요구사항
-            // json 응답에서 title값 길이를 최대 10글자로 제한.
+        // json 응답에서 title값 길이를 최대 10글자로 제한.
 
         // when
-        PostResponse post = postService.get(31L);
+        PostResponse post = postService.get(request.getId());
 
         // then
         assertNotNull(post);
@@ -79,7 +79,26 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("글 1개 조회 실패")
+    void 글_단건_조회_실패_케이스() {
+
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        // expected
+        assertThrows(PostNotFound.class, () -> {
+            postService.get(post.getId() + 1L);
+        });
+    }
+
+
+    @Test
     @DisplayName("post 페이징 1페이지 조회")
+
     void POST_페이징_목록_조회() {
 
         // given
@@ -136,7 +155,7 @@ class PostServiceTest {
     }
 
     @Test
-    @DisplayName("글 내용 수정")
+    @DisplayName("글 내용 수정 - 존재하지 않는 글")
     void 글_내용_수정() {
 
         // given
@@ -158,13 +177,19 @@ class PostServiceTest {
 
         // then
         Post changedPost = postRepository.findById(post.getId())
-                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+                .orElseThrow(PostNotFound::new);
 
         assertEquals("내용후", changedPost.getContent());
+
+        // expected
+        assertThrows(PostNotFound.class, () -> {
+            postService.edit(post.getId() + 1L, postEdit);
+        });
+
     }
 
     @Test
-    @DisplayName("게시글 삭제")
+    @DisplayName("게시글 삭제 - 존재하지 않는 글")
     void 게시글_삭제() {
 
         // given
@@ -175,10 +200,9 @@ class PostServiceTest {
 
         postRepository.save(post);
 
-        // when
-        postService.delete(post.getId());
-
-        // then
-        assertEquals(0, postRepository.count());
+        // expected
+        assertThrows(PostNotFound.class, () -> {
+            postService.delete(post.getId() + 1L);
+        });
     }
 }
