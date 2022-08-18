@@ -3,6 +3,7 @@ package org.project.weathercommunity.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.request.PostCreate;
+import org.project.weathercommunity.request.PostEdit;
 import org.project.weathercommunity.request.PostSearch;
 import org.project.weathercommunity.response.PostResponse;
 import org.project.weathercommunity.service.PostService;
@@ -46,5 +47,10 @@ public class PostController {
     @GetMapping("/posts")
     public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
         return postService.getList(postSearch);
+    }
+
+    @PatchMapping("/edit/{postId}")
+    public void edit(@PathVariable(value = "postId") Long id, @RequestBody @Valid PostEdit postEdit) {
+        postService.edit(id,postEdit);
     }
 }

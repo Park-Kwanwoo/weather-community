@@ -3,21 +3,17 @@ package org.project.weathercommunity.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.domain.Post;
+import org.project.weathercommunity.domain.PostEditor;
 import org.project.weathercommunity.repository.PostRepository;
 import org.project.weathercommunity.request.PostCreate;
 import org.project.weathercommunity.request.PostSearch;
+import org.project.weathercommunity.request.PostEdit;
 import org.project.weathercommunity.response.PostResponse;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Id;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.domain.Sort.*;
-import static org.springframework.data.domain.Sort.Direction.*;
 
 @Slf4j
 @Service
@@ -62,4 +58,20 @@ public class PostService {
                 .collect(Collectors.toList());
 
     }
+
+    @Transactional
+    public void edit(Long id, PostEdit postedit) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+
+        PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
+
+        PostEditor postEditor = editorBuilder.title(postedit.getTitle())
+                .content(postedit.getContent())
+                .build();
+
+        post.edit(postEditor);
+    }
+
+
 }
