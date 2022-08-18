@@ -1,7 +1,6 @@
 package org.project.weathercommunity.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @SpringBootTest
@@ -152,10 +152,10 @@ class PostControllerTest {
 
         postRepository.saveAll(requestPosts);
         // expected (when과 then이 섞인 느낌)
-        mockMvc.perform(get("/posts?page=1&sort=id,desc")
+        mockMvc.perform(get("/posts?page=1&size=10")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(5)))
+                .andExpect(jsonPath("$.length()", is(10)))
                 .andExpect(jsonPath("$[0].id").value(30))
                 .andExpect(jsonPath("$[0].title").value("제목30"))
                 .andExpect(jsonPath("$[0].content").value("내용30"))

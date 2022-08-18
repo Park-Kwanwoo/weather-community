@@ -6,21 +6,17 @@ import org.junit.jupiter.api.Test;
 import org.project.weathercommunity.domain.Post;
 import org.project.weathercommunity.repository.PostRepository;
 import org.project.weathercommunity.request.PostCreate;
+import org.project.weathercommunity.request.PostSearch;
 import org.project.weathercommunity.response.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @SpringBootTest
 class PostServiceTest {
@@ -67,11 +63,12 @@ class PostServiceTest {
                 .build();
         postRepository.save(request);
 
+
         // 클라이언트 요구사항
             // json 응답에서 title값 길이를 최대 10글자로 제한.
 
         // when
-        PostResponse post = postService.get(1L);
+        PostResponse post = postService.get(31L);
 
         // then
         assertNotNull(post);
@@ -82,10 +79,10 @@ class PostServiceTest {
 
     @Test
     @DisplayName("post 페이징 1페이지 조회")
-    void POST_목록_조회() {
+    void POST_페이징_목록_조회() {
 
         // given
-        List<Post> requestPosts = IntStream.range(0, 30)
+        List<Post> requestPosts = IntStream.range(1, 31)
                 .mapToObj(i -> {
                     return Post.builder()
                             .title("제목" + i)
@@ -96,14 +93,16 @@ class PostServiceTest {
 
         postRepository.saveAll(requestPosts);
 
-        Pageable pageable = PageRequest.of(0, 5, DESC, "id");
-
+        PostSearch postSearch = PostSearch.builder()
+                .page(1)
+                .size(10)
+                .build();
         // when
-        List<PostResponse> posts = postService.getList(pageable);
+        List<PostResponse> posts = postService.getList(postSearch);
 
         // then
-        assertEquals(5L, posts.size());
-        assertEquals("제목29", posts.get(0).getTitle());
-        assertEquals("내용25", posts.get(4).getContent());
+        assertEquals(10L, posts.size());
+        assertEquals("제목30", posts.get(0).getTitle());
+        assertEquals("내용26", posts.get(4).getContent());
     }
 }
