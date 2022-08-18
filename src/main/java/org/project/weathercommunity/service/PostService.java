@@ -11,6 +11,7 @@ import org.project.weathercommunity.request.PostEdit;
 import org.project.weathercommunity.response.PostResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,5 +74,10 @@ public class PostService {
         post.edit(postEditor);
     }
 
+    public void delete(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
 
+        postRepository.delete(post);
+    }
 }

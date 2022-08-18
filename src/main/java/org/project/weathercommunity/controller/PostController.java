@@ -2,6 +2,7 @@ package org.project.weathercommunity.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.project.weathercommunity.domain.Post;
 import org.project.weathercommunity.request.PostCreate;
 import org.project.weathercommunity.request.PostEdit;
 import org.project.weathercommunity.request.PostSearch;
@@ -52,5 +53,10 @@ public class PostController {
     @PatchMapping("/edit/{postId}")
     public void edit(@PathVariable(value = "postId") Long id, @RequestBody @Valid PostEdit postEdit) {
         postService.edit(id,postEdit);
+    }
+
+    @DeleteMapping("/posts/{postId}")
+    public void delete(@PathVariable(value = "postId") Long id) {
+        postService.delete(id);
     }
 }
