@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.project.weathercommunity.request.PostEdit;
 
 import javax.persistence.*;
 
