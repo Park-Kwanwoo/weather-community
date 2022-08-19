@@ -2,7 +2,6 @@ package org.project.weathercommunity.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,17 +17,20 @@ import java.util.Map;
  * }
  */
 @Getter
+// null 값인 데이터는 빼고 전송할 수 있음
+//@JsonInclude(value = Include.NON_EMPTY)
 public class ErrorResponse {
 
     private final String code;
     private final String message;
 
-    private Map<String, String> validation = new HashMap<>();
+    private final Map<String, String> validation;
 
     @Builder
-    public ErrorResponse(String code, String message) {
+    public ErrorResponse(String code, String message, Map<String, String> validation) {
         this.code = code;
         this.message = message;
+        this.validation = validation != null ? validation : new HashMap<>();
     }
 
     public void addValidation(String fieldName, String errorMessage) {
