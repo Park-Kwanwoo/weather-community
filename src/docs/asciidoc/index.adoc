@@ -1,17 +1,34 @@
 = 날씨 커뮤니티 API
-# 제목 바로 아래 적어주어야 한다.
-:toc:
+// 제목 바로 아래 적어주어야 한다.
+:doctype: book
+:icons: font
+:source-highlighter: highlights
+:toc: left
+:toclevels: 2
+:sectlinks:
 
 == 글 단건 조회
 
 === 요청
 
-include::{snippets}/index/http-request.adoc[]
+include::{snippets}/post-inquiry/http-request.adoc[]
+
+include::{snippets}/post-inquiry/path-parameters.adoc[]
 
 === 응답
 
-include::{snippets}/index/http-response.adoc[]
+include::{snippets}/post-inquiry/http-response.adoc[]
 
-=== CURL
+include::{snippets}/post-inquiry/response-fields.adoc[]
 
-include::{snippets}/index/curl-request.adoc[]
+== 글 작성
+
+=== 요청
+
+include::{snippets}/post-create/http-request.adoc[]
+
+include::{snippets}/post-create/request-fields.adoc[]
+
+=== 응답
+
+include::{snippets}/post-create/http-response.adoc[]
