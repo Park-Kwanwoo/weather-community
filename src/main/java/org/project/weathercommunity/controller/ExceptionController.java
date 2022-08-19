@@ -1,8 +1,10 @@
 package org.project.weathercommunity.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.project.weathercommunity.exception.WeatherCommunityException;
 import org.project.weathercommunity.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -29,5 +31,25 @@ public class ExceptionController {
         }
 
         return response;
+    }
+
+
+    @ResponseBody
+    @ExceptionHandler(WeatherCommunityException.class)
+    public ResponseEntity<ErrorResponse> weatherCommunityException(WeatherCommunityException e) {
+
+        int statusCode = e.getStatusCode();
+
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code(String.valueOf(statusCode))
+                .message(e.getMessage())
+                .validation(e.getValidation())
+                .build();
+
+        // 응답: json validation -> 오류 필드 : 오류 이유 메시지
+
+        return ResponseEntity.status(statusCode)
+                .body(body);
     }
 }
