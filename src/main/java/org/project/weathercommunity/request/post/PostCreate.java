@@ -1,4 +1,4 @@
-package org.project.weathercommunity.request;
+package org.project.weathercommunity.request.post;
 
 import lombok.*;
 import org.project.weathercommunity.exception.InvalidRequest;

@@ -1,10 +1,9 @@
-package org.project.weathercommunity.request;
+package org.project.weathercommunity.request.post;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.project.weathercommunity.domain.Post;
 
 import javax.validation.constraints.NotBlank;
 

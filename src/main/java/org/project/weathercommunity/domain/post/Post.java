@@ -1,4 +1,4 @@
-package org.project.weathercommunity.domain;
+package org.project.weathercommunity.domain.post;
 
 import lombok.AccessLevel;
 import lombok.Builder;

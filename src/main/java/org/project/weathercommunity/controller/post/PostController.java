@@ -1,12 +1,12 @@
-package org.project.weathercommunity.controller;
+package org.project.weathercommunity.controller.post;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.project.weathercommunity.request.PostCreate;
-import org.project.weathercommunity.request.PostEdit;
-import org.project.weathercommunity.request.PostSearch;
-import org.project.weathercommunity.response.PostResponse;
-import org.project.weathercommunity.service.PostService;
+import org.project.weathercommunity.request.post.PostCreate;
+import org.project.weathercommunity.request.post.PostEdit;
+import org.project.weathercommunity.request.post.PostSearch;
+import org.project.weathercommunity.response.post.PostResponse;
+import org.project.weathercommunity.service.post.PostService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

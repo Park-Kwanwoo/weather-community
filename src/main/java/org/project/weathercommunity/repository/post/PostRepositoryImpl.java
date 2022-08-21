@@ -1,10 +1,10 @@
-package org.project.weathercommunity.repository;
+package org.project.weathercommunity.repository.post;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.project.weathercommunity.domain.Post;
-import org.project.weathercommunity.domain.QPost;
-import org.project.weathercommunity.request.PostSearch;
+import org.project.weathercommunity.domain.post.Post;
+import org.project.weathercommunity.domain.post.QPost;
+import org.project.weathercommunity.request.post.PostSearch;
 
 import java.util.List;
 

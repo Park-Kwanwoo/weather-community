@@ -1,8 +1,8 @@
-package org.project.weathercommunity.response;
+package org.project.weathercommunity.response.post;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.project.weathercommunity.domain.Post;
+import org.project.weathercommunity.domain.post.Post;
 
 /**
  * 서비스 정책에 맞는 응답 클래스

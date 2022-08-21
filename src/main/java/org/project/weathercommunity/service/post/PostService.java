@@ -1,15 +1,15 @@
-package org.project.weathercommunity.service;
+package org.project.weathercommunity.service.post;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.project.weathercommunity.domain.Post;
-import org.project.weathercommunity.domain.PostEditor;
+import org.project.weathercommunity.domain.post.Post;
+import org.project.weathercommunity.domain.post.PostEditor;
 import org.project.weathercommunity.exception.PostNotFound;
-import org.project.weathercommunity.repository.PostRepository;
-import org.project.weathercommunity.request.PostCreate;
-import org.project.weathercommunity.request.PostEdit;
-import org.project.weathercommunity.request.PostSearch;
-import org.project.weathercommunity.response.PostResponse;
+import org.project.weathercommunity.repository.post.PostRepository;
+import org.project.weathercommunity.request.post.PostCreate;
+import org.project.weathercommunity.request.post.PostEdit;
+import org.project.weathercommunity.request.post.PostSearch;
+import org.project.weathercommunity.response.post.PostResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.project.weathercommunity.domain.Post;
-import org.project.weathercommunity.repository.PostRepository;
-import org.project.weathercommunity.request.PostCreate;
+import org.project.weathercommunity.domain.post.Post;
+import org.project.weathercommunity.repository.post.PostRepository;
+import org.project.weathercommunity.request.post.PostCreate;
+import org.project.weathercommunity.request.post.PostEdit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,12 +17,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -100,10 +99,69 @@ public class PostControllerDocTest {
                 .andExpect(status().isOk())
                 .andDo(document("post-create",
                         requestFields(
-                                fieldWithPath("title").description("제목")
-                                        .attributes(key("constraint").value("예제")),
-                                fieldWithPath("content").description("내용").optional()
+                                fieldWithPath("title").description("제목"),
+                                fieldWithPath("content").description("내용")
                         )
                 ));
+    }
+
+    @Test
+    @DisplayName("글 수정")
+    void 글_수정_Doc() throws Exception {
+
+        // given
+        Post post = Post.builder()
+                .title("제목 전")
+                .content("내용 전")
+                .build();
+
+
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("제목 후")
+                .content("내용 후")
+                .build();
+
+        // expectd
+        mockMvc.perform(patch("/posts/{postId}", post.getId())
+                        .accept(APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(postEdit))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("post-edit", pathParameters(
+                                parameterWithName("postId").description("게시글 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("title").description("제목"),
+                                fieldWithPath("content").description("내용")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("글 삭제")
+    void 글_삭제_Doc() throws Exception {
+
+        // given
+        Post post = Post.builder()
+                .title("삭제할 포스트")
+                .content("삭제할 내용")
+                .build();
+
+
+        postRepository.save(post);
+
+        // expectd
+        mockMvc.perform(delete("/posts/{postId}", post.getId())
+                        .accept(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("post-delete", pathParameters(
+                        parameterWithName("postId").description("게시글 ID")
+                )));
     }
 }
