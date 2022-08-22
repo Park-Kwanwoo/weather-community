@@ -1,4 +1,4 @@
-package org.project.weathercommunity.controller;
+package org.project.weathercommunity.controller.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.exception.WeatherCommunityException;
