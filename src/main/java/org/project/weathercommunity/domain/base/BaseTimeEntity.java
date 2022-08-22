@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @MappedSuperclass // BaseEntity를 상속한 엔티티들은 아래 필드를 컬럼으로 인식
 @EntityListeners(AuditingEntityListener.class) // Auditing(자동 값 매핑)
-public class BaseEntity {
+public class BaseTimeEntity {
 
     @CreatedDate
     private String createdDate;
