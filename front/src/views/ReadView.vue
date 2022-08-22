@@ -27,7 +27,7 @@ onMounted(() => {
     post.value = response.data;
   })
 })
-가
+
 </script>
 
 <template>
