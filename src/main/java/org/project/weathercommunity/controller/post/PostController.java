@@ -19,7 +19,7 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping("/posts")
+    @PostMapping("/posts/create")
     public void post(@RequestBody @Valid PostCreate request) {
         // Case1. 저장한 데이터 Entity -> response로 응답하기
         // Case2. 저장한 데이터의 primary_id -> response로 응답하기

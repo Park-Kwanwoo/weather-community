@@ -55,7 +55,7 @@ class PostControllerTest {
         String requestToJson = objectMapper.writeValueAsString(request);
 
         // when
-        mockMvc.perform(post("/posts")
+        mockMvc.perform(post("/posts/create")
                         .contentType(APPLICATION_JSON)
                         .content(requestToJson)
                 )
@@ -76,7 +76,7 @@ class PostControllerTest {
         String requestToJson = objectMapper.writeValueAsString(request);
 
         // when
-        mockMvc.perform(post("/posts")
+        mockMvc.perform(post("/posts/create")
                         .contentType(APPLICATION_JSON)
                         .content(requestToJson)
                 )
@@ -100,7 +100,7 @@ class PostControllerTest {
         String requestToJson = objectMapper.writeValueAsString(request);
 
         // when
-        mockMvc.perform(post("/posts")
+        mockMvc.perform(post("/posts/create")
                         .contentType(APPLICATION_JSON)
                         .content(requestToJson)
                 )
@@ -250,7 +250,7 @@ class PostControllerTest {
         String requestToJson = objectMapper.writeValueAsString(request);
 
         // when
-        mockMvc.perform(post("/posts")
+        mockMvc.perform(post("/posts/create")
                         .contentType(APPLICATION_JSON)
                         .content(requestToJson)
                 )

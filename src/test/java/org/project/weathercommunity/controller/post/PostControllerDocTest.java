@@ -91,7 +91,7 @@ public class PostControllerDocTest {
         String json = objectMapper.writeValueAsString(request);
 
         // expected
-        this.mockMvc.perform(post("/posts")
+        this.mockMvc.perform(post("/posts/create")
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON)
                         .content(json))
