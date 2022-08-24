@@ -38,4 +38,18 @@ public class Member extends BaseTimeEntity {
         this.phone = phone;
         this.role = Role.ROLE_USER;
     }
+
+    public MemberEditor.MemberEditorBuilder toEditor() {
+        return MemberEditor.builder()
+                .name(name)
+                .password(password)
+                .phone(phone);
+    }
+
+    public void edit(MemberEditor memberEditor) {
+        this.name = memberEditor.getName();
+        this.phone = memberEditor.getPhone();
+        this.password = memberEditor.getPassword();
+    }
+
 }
