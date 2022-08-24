@@ -1,4 +1,4 @@
-package org.project.weathercommunity.service;
+package org.project.weathercommunity.service.post;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
