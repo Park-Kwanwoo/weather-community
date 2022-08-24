@@ -10,7 +10,6 @@ import org.project.weathercommunity.request.post.PostCreate;
 import org.project.weathercommunity.request.post.PostEdit;
 import org.project.weathercommunity.request.post.PostSearch;
 import org.project.weathercommunity.response.post.PostResponse;
-import org.project.weathercommunity.service.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
