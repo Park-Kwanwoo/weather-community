@@ -40,7 +40,6 @@ public class ExceptionController {
 
         int statusCode = e.getStatusCode();
 
-
         ErrorResponse body = ErrorResponse.builder()
                 .code(String.valueOf(statusCode))
                 .message(e.getMessage())
@@ -48,7 +47,6 @@ public class ExceptionController {
                 .build();
 
         // 응답: json validation -> 오류 필드 : 오류 이유 메시지
-
         return ResponseEntity.status(statusCode)
                 .body(body);
     }
