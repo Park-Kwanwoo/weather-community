@@ -18,7 +18,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/signup")
+    @PostMapping("/members/create")
     public void signUp(@RequestBody @Valid MemberCreate memberCreate) {
         memberService.signUp(memberCreate);
     }
