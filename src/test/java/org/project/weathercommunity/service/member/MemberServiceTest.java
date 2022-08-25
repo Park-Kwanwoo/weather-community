@@ -44,7 +44,7 @@ class MemberServiceTest {
                 .build();
 
         // when
-        memberService.signUp(memberCreate);
+        memberService.join(memberCreate);
 
         // then
         assertEquals(1L, memberRepository.count());
