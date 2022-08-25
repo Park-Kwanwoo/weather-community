@@ -151,14 +151,17 @@ class PostControllerTest {
                 .collect(Collectors.toList());
 
         postRepository.saveAll(requestPosts);
+
+        long length = postRepository.count();
+
         // expected (when과 then이 섞인 느낌)
         mockMvc.perform(get("/posts?page=1&size=10")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(10)))
-                .andExpect(jsonPath("$[0].id").value(30))
-                .andExpect(jsonPath("$[0].title").value("제목30"))
-                .andExpect(jsonPath("$[0].content").value("내용30"))
+                .andExpect(jsonPath("$[0].id").value(length))
+                .andExpect(jsonPath("$[0].title").value("제목" + length))
+                .andExpect(jsonPath("$[0].content").value("내용" + length))
                 .andDo(print());
     }
 
