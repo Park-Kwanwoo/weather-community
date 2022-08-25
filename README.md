@@ -1,1 +1,1 @@
-## Weather Commnutiy
+## Weather Community
