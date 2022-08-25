@@ -17,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    public void signUp(MemberCreate memberCreate) {
+
+    public void join(MemberCreate memberCreate) {
 
         Member member = Member.builder()
                 .email(memberCreate.getEmail())
