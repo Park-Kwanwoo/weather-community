@@ -8,6 +8,7 @@ import org.project.weathercommunity.exception.MemberNotFound;
 import org.project.weathercommunity.repository.member.MemberRepository;
 import org.project.weathercommunity.request.member.MemberCreate;
 import org.project.weathercommunity.request.member.MemberEdit;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public void join(MemberCreate memberCreate) {
 
         Member member = Member.builder()
                 .email(memberCreate.getEmail())
                 .name(memberCreate.getName())
-                .password(memberCreate.getPassword())
+                .password(passwordEncoder.encode(memberCreate.getPassword()))
                 .phone(memberCreate.getPhone())
                 .build();
 
