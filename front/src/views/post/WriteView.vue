@@ -8,7 +8,7 @@ const content = ref("")
 const router = useRouter();
 
 const write = function () {
-  axios.post("/api/posts", {
+  axios.post("/api/posts/create", {
     title: title.value,
     content: content.value
   })
