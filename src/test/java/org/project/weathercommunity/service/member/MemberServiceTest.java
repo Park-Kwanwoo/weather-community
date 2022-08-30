@@ -11,9 +11,9 @@ import org.project.weathercommunity.request.member.MemberCreate;
 import org.project.weathercommunity.request.member.MemberEdit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class MemberServiceTest {
@@ -23,6 +23,9 @@ class MemberServiceTest {
 
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @BeforeEach
@@ -40,8 +43,10 @@ class MemberServiceTest {
                 .email("test@case.com")
                 .name("테스터")
                 .phone("010-1234-5678")
-                .password("tester")
+                .password("tester12#")
                 .build();
+
+        String encodedPassword = passwordEncoder.encode("tester12#");
 
         // when
         memberService.join(memberCreate);
@@ -50,7 +55,10 @@ class MemberServiceTest {
         assertEquals(1L, memberRepository.count());
         Member member = memberRepository.findAll().get(0);
         assertEquals("test@case.com", member.getEmail());
-        assertEquals("tester", member.getPassword());
+        assertAll(
+                () -> assertNotEquals("tester12#", passwordEncoder.encode("tester12#")),
+                () -> assertTrue(passwordEncoder.matches("tester12#", encodedPassword))
+        );
         assertEquals("테스터", member.getName());
         assertEquals("010-1234-5678", member.getPhone());
         assertEquals(Role.ROLE_USER, member.getRole());
