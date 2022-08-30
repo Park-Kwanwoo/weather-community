@@ -25,4 +25,9 @@ public class MemberController {
     public void edit(@PathVariable("memberId") Long id, @RequestBody @Valid MemberEdit memberEdit) {
         memberService.edit(id, memberEdit);
     }
+
+    @DeleteMapping("/members/{memberId}")
+    public void delete(@PathVariable("memberId") Long id) {
+        memberService.delete(id);
+    }
 }
