@@ -144,8 +144,8 @@ class PostControllerTest {
         List<Post> requestPosts = IntStream.range(1, 31)
                 .mapToObj(i -> {
                     return Post.builder()
-                            .title("제목" + i)
-                            .content("내용" + i)
+                            .title("제목")
+                            .content("내용")
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -160,8 +160,8 @@ class PostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(10)))
                 .andExpect(jsonPath("$[0].id").value(length))
-                .andExpect(jsonPath("$[0].title").value("제목" + length))
-                .andExpect(jsonPath("$[0].content").value("내용" + length))
+                .andExpect(jsonPath("$[0].title").value("제목"))
+                .andExpect(jsonPath("$[0].content").value("내용"))
                 .andDo(print());
     }
 
