@@ -58,3 +58,38 @@ include::{snippets}/post-delete/path-parameters.adoc[]
 === 응답
 
 include::{snippets}/post-delete/http-response.adoc[]
+
+== 회원 가입
+
+=== 요청
+include::{snippets}/member-join/http-request.adoc[]
+
+include::{snippets}/member-join/request-fields.adoc[]
+
+=== 응답
+
+include::{snippets}/member-join/http-response.adoc[]
+
+
+== 회원 정보 수정
+
+=== 요청
+
+include::{snippets}/member-edit/http-request.adoc[]
+include::{snippets}/member-edit/path-parameters.adoc[]
+include::{snippets}/member-edit/request-fields.adoc[]
+
+=== 응답
+
+include::{snippets}/member-edit/http-response.adoc[]
+
+== 회원 삭제
+
+=== 요청
+
+include::{snippets}/member-delete/http-request.adoc[]
+include::{snippets}/member-delete/path-parameters.adoc[]
+
+=== 응답
+
+include::{snippets}/member-delete/http-response.adoc[]
