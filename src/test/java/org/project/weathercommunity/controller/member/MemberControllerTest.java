@@ -9,16 +9,15 @@ import org.project.weathercommunity.domain.member.Role;
 import org.project.weathercommunity.repository.member.MemberRepository;
 import org.project.weathercommunity.request.member.MemberCreate;
 import org.project.weathercommunity.request.member.MemberEdit;
-import org.project.weathercommunity.service.member.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,7 +33,7 @@ class MemberControllerTest {
     private MemberRepository memberRepository;
 
     @Autowired
-    private MemberService memberService;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private MockMvc mockMvc;
@@ -57,6 +56,7 @@ class MemberControllerTest {
                 .build();
 
         String jsonData = objectMapper.writeValueAsString(request);
+        String encodedPassword = passwordEncoder.encode("tester12#");
 
         // when
         mockMvc.perform(post("/members/join")
@@ -68,8 +68,11 @@ class MemberControllerTest {
         // then
         assertEquals(1L, memberRepository.count());
         Member member = memberRepository.findAll().get(0);
+        assertAll(
+                () -> assertNotEquals("tester12#", passwordEncoder.encode("tester12#")),
+                () -> assertTrue(passwordEncoder.matches("tester12#", encodedPassword))
+        );
         assertEquals("test@case.com", member.getEmail());
-        assertEquals("tester12#", member.getPassword());
         assertEquals("테스터", member.getName());
         assertEquals("010-1234-5678", member.getPhone());
         assertEquals(Role.ROLE_USER, member.getRole());
@@ -186,4 +189,25 @@ class MemberControllerTest {
                 .andDo(print());
     }
 
+
+    @Test
+    @DisplayName("회원 삭제 테스트")
+    void 회원_탈퇴() throws Exception {
+
+        // given
+        Member member = Member.builder()
+                .email("test@case.com")
+                .name("테스터")
+                .phone("010-1234-5678")
+                .password("tester12#")
+                .build();
+
+        memberRepository.save(member);
+
+        // expected
+        mockMvc.perform(delete("/members/{memberId}", member.getId())
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 }
