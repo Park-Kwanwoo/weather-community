@@ -144,24 +144,23 @@ class PostControllerTest {
         List<Post> requestPosts = IntStream.range(1, 31)
                 .mapToObj(i -> {
                     return Post.builder()
-                            .title("제목")
-                            .content("내용")
+                            .title("제목" + i)
+                            .content("내용" + i)
                             .build();
                 })
                 .collect(Collectors.toList());
 
         postRepository.saveAll(requestPosts);
 
-        long length = postRepository.count();
 
         // expected (when과 then이 섞인 느낌)
         mockMvc.perform(get("/posts?page=1&size=10")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(10)))
-                .andExpect(jsonPath("$[0].id").value(length))
-                .andExpect(jsonPath("$[0].title").value("제목"))
-                .andExpect(jsonPath("$[0].content").value("내용"))
+//                .andExpect(jsonPath("$[0].id").value(num))
+                .andExpect(jsonPath("$[0].title").value("제목" + 30))
+                .andExpect(jsonPath("$[0].content").value("내용" + 30))
                 .andDo(print());
     }
 
