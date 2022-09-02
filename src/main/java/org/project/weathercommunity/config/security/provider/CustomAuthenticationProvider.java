@@ -30,9 +30,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         // 바꿔야함
         CustomUserDetails member = (CustomUserDetails) userDetailsService.loadUserByUsername(email);
 
-        log.info("result = {}", passwordEncoder.matches(password, member.getPassword()));
-
-        if (passwordEncoder.matches(password, member.getPassword())) {
+        if (!passwordEncoder.matches(password, member.getMember().getPassword())) {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
