@@ -2,6 +2,7 @@ package org.project.weathercommunity.controller.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.project.weathercommunity.exception.MemberDuplicateException;
 import org.project.weathercommunity.request.member.MemberCreate;
 import org.project.weathercommunity.request.member.MemberEdit;
 import org.project.weathercommunity.service.member.MemberService;
@@ -18,7 +19,13 @@ public class MemberController {
 
     @PostMapping("/members/join")
     public void join(@RequestBody @Valid MemberCreate memberCreate) {
-        memberService.join(memberCreate);
+
+        if (memberService.duplicateCheck(memberCreate.getEmail())) {
+            memberService.join(memberCreate);
+        } else {
+            throw new MemberDuplicateException("email", "중복된 이메일입니다.");
+        }
+
     }
 
     @PatchMapping("/members/{memberId}")
