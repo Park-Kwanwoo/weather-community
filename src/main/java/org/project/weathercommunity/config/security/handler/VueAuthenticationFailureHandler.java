@@ -1,9 +1,8 @@
 package org.project.weathercommunity.config.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.project.weathercommunity.response.ErrorResponse;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
@@ -22,19 +21,17 @@ public class VueAuthenticationFailureHandler implements AuthenticationFailureHan
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
-        String errMsg = "아이디 혹은 비밀번호가 맞지 않습니다.";
-
         response.setStatus(UNAUTHORIZED.value());
         response.setContentType(APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("utf-8");
 
         if (exception instanceof BadCredentialsException) {
-            errMsg = "아이디 혹은 비밀번호가 맞지 않습니다.";
-        } else if (exception instanceof DisabledException) {
-            errMsg = "Locked";
-        } else if (exception instanceof CredentialsExpiredException) {
-            errMsg = " Expired password";
+            ErrorResponse body = ErrorResponse.builder().
+                    code(String.valueOf(UNAUTHORIZED)).
+                    message("유효하지 않은 사용자 정보입니다.").
+                    build();
+            objectMapper.writeValue(response.getWriter(), body);
         }
 
-        objectMapper.writeValue(response.getWriter(), errMsg);
     }
 }
