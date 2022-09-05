@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -57,5 +59,12 @@ public class MemberService {
                 .orElseThrow(MemberNotFound::new);
 
         memberRepository.delete(member);
+    }
+
+    public boolean duplicateCheck(String email) {
+
+        Optional<Member> validEmail = memberRepository.findByEmail(email);
+
+        return validEmail.isEmpty();
     }
 }
