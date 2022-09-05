@@ -18,7 +18,7 @@
     <h3>전화번호</h3>
     <p id="phone"> {{ errorResponse.phone }} </p>
     <el-input v-model="phone" rows="15"
-              maxlength="11"
+              maxlength="13"
               placeholder="숫자만 입력해주세요."
               :formatter='(phone) => `${phone}`.replace(/[^0-9]/g, "")
     .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3").replace(/(\-{1,2})$/g, "")'
