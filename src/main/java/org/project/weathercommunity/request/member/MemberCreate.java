@@ -26,7 +26,7 @@ public class MemberCreate {
     private String name;
 
     @NotBlank(message = "전화번호를 입력해주세요.")
-    @Pattern(regexp = "^\\d{3}-\\d{3,4}-\\d{4}$", message = "전화번호 형식에 맞게 입력해주세요.")
+    @Pattern(regexp = "^(?:(010-\\d{4})|(01[1|6|7|8|9]-\\d{3,4}))-(\\d{4})$", message = "전화번호 형식에 맞게 입력해주세요.")
     private String phone;
 
     private Role role;
