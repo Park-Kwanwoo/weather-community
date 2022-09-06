@@ -5,8 +5,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.project.weathercommunity.domain.base.BaseTimeEntity;
+import org.project.weathercommunity.domain.member.Member;
 
 import javax.persistence.*;
+
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
@@ -20,10 +23,14 @@ public class Post extends BaseTimeEntity {
     @Lob
     private String content;
 
+    @ManyToOne(targetEntity = Member.class, fetch = LAZY)
+    private Member member;
+
     @Builder
-    public Post(String title, String content) {
+    public Post(String title, String content, Member member) {
         this.title = title;
         this.content = content;
+        this.member = member;
     }
 
     public PostEditor.PostEditorBuilder toEditor() {
