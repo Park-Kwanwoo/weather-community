@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import PostListView from '../views/post/PostListView.vue'
+import PostWriteView from '../views/post/PostWriteView.vue'
 import PostView from '../views/post/PostView.vue'
-import WriteView from '../views/post/WriteView.vue'
-import ReadView from '../views/post/ReadView.vue'
-import EditView from '../views/post/EditView.vue'
+import PostEditView from '../views/post/PostEditView.vue'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/user/LoginView.vue'
 import JoinView from '../views/user/JoinView.vue'
@@ -18,23 +18,23 @@ const router = createRouter({
     {
       path: '/posts',
       name: 'posts',
-      component: PostView
+      component: PostListView
     },
     {
-      path: '/write',
+      path: '/post/write',
       name: 'write',
-      component: WriteView
+      component: PostWriteView
     },
     {
-      path: '/read/:postId',
-      name: "read",
-      component: ReadView,
+      path: '/post/:postId',
+      name: "post",
+      component: PostView,
       props: true,
     },
     {
-      path: "/edit/:postId",
+      path: "/post/edit/:postId",
       name: "edit",
-      component: EditView,
+      component: PostEditView,
       props: true,
     },
     {
