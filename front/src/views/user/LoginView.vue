@@ -37,7 +37,6 @@ const configs = {
   }
 }
 
-const errorMsg = ref('');
 const submitForm = () => {
   axios.post("/api/members/login", loginData, configs)
       .then((r) => {
