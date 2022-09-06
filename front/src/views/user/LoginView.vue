@@ -19,8 +19,12 @@
 import axios from "axios";
 import {reactive, ref} from "vue";
 import {useRouter} from "vue-router";
+import {useAuthStore} from "@/stores/auth";
+import {storeToRefs} from "pinia";
 
 const router = useRouter();
+const auth = useAuthStore();
+const { user } = storeToRefs(auth);
 
 const loginData = reactive({
   email: '',
@@ -34,11 +38,13 @@ const configs = {
 }
 
 const errorMsg = ref('');
-
 const submitForm = () => {
   axios.post("/api/members/login", loginData, configs)
       .then((r) => {
-        console.log(r)
+        auth.setAuth(true)
+        auth.setRole(r.data.role)
+        auth.setUser(r.data)
+        router.replace({name: 'home'});
       })
       .catch(e => {
         console.log(e.response.data.message)
