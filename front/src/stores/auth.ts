@@ -1,8 +1,7 @@
 import {defineStore} from "pinia";
 
 
-export const useAuthStore = defineStore({
-    id: 'auth',
+export const useAuthStore = defineStore('auth', {
     state: () => ({
         isAuth: false,
         user: null,
@@ -28,6 +27,12 @@ export const useAuthStore = defineStore({
         },
         setRole(role: string){
             this.role = role;
+        },
+        clear() {
+            this.isAuth = false;
+            this.role = '';
+            this.user = null;
         }
-    }
+    },
+    persist: true
 })
