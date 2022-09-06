@@ -17,11 +17,11 @@
     </el-sub-menu>
     <el-menu-item index="2">
       <el-icon><icon-menu /></el-icon>
-      <template #title>Navigator Two</template>
+      <el-link><router-link to="/post/write">글 쓰러가기</router-link></el-link>
     </el-menu-item>
-    <el-menu-item index="3" disabled>
+    <el-menu-item index="3">
       <el-icon><document /></el-icon>
-      <template #title>Navigator Three</template>
+      <template #title><router-link to="/posts">글 목록</router-link></template>
     </el-menu-item>
     <el-menu-item index="4">
       <el-icon><setting /></el-icon>
@@ -41,13 +41,8 @@ import {
 </script>
 
 <style>
-.el-menu-vertical-demo:not(.el-menu--collapse) {
+.el-menu-vertical-demo:not(el-menu) {
   width: 200px;
   min-height: 400px;
-}
-
-el-menu-item router-link {
-  text-decoration: none;
-  color: #303030;
 }
 </style>
