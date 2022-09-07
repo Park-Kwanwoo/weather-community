@@ -1,10 +1,10 @@
 <template>
   <el-header class="header">
     <el-menu mode="horizontal">
-      <img alt="" src="">
+      <el-menu-item><router-link :to="{name:'home'}">HOME</router-link></el-menu-item>
       <el-menu-item v-if="!getIsAuth" @click="login">로그인</el-menu-item>
       <el-menu-item v-if="!getIsAuth" @click="join">회원가입</el-menu-item>
-      <el-menu-item v-if="getIsAuth" @click="myInfo">내 정보</el-menu-item>
+      <el-menu-item v-if="getIsAuth" @click="myPage">내 정보</el-menu-item>
       <el-menu-item v-if="getIsAuth" @click="logout">로그아웃</el-menu-item>
     </el-menu>
   </el-header>
@@ -17,24 +17,20 @@ import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
 
 const auth = useAuthStore();
-const { getIsAuth } = storeToRefs(auth)
+const {getIsAuth} = storeToRefs(auth)
 const router = useRouter();
 
 const logout = function () {
   auth.clear();
-  router.replace({name: 'home'})
+  router.push({name: 'home'})
 };
 const login = () => {
-  router.replace( {name: 'login'})
+  router.replace({name: 'login'})
 }
 const join = () => {
-  router.replace( {name: 'join'})
+  router.replace({name: 'join'})
 }
-const myInfo = () => {
-  router.replace( {name: 'myInfo'})
+const myPage = () => {
+  router.replace( {name: 'myPage'})
 }
 </script>
-
-<style >
-
-</style>
