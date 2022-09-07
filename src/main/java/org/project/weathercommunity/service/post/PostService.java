@@ -28,11 +28,13 @@ public class PostService {
         Post post = Post.builder()
                 .title(postCreate.getTitle())
                 .content(postCreate.getContent())
+                .member(postCreate.getMember())
                 .build();
         postRepository.save(post);
     }
 
     public PostResponse get(Long id) {
+
         Post post = postRepository.findById(id)
                 .orElseThrow(PostNotFound::new);
 
@@ -40,6 +42,7 @@ public class PostService {
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .memberId(post.getMember().getId())
                 .build();
     }
 

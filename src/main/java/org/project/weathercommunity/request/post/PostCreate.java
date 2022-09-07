@@ -1,9 +1,11 @@
 package org.project.weathercommunity.request.post;
 
 import lombok.*;
+import org.project.weathercommunity.domain.member.Member;
 import org.project.weathercommunity.exception.InvalidRequest;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -17,10 +19,14 @@ public class PostCreate {
     @NotBlank(message = "콘텐츠를 입력하세요.")
     private String content;
 
+    @NotNull
+    private Member member;
+
     @Builder
-    public PostCreate(String title, String content) {
+    public PostCreate(String title, String content, Member member) {
         this.title = title;
         this.content = content;
+        this.member = member;
     }
 
     public void validate() {

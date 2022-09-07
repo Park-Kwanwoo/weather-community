@@ -13,17 +13,20 @@ public class PostResponse {
     private final Long id;
     private final String title;
     private final String content;
+    private final Long memberId;
 
     // 생성자 오버로딩
     public PostResponse(Post post) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
+        this.memberId = post.getMember().getId();
     }
     @Builder
-    public PostResponse(Long id, String title, String content) {
+    public PostResponse(Long id, String title, String content, Long memberId) {
         this.id = id;
         this.title = title;
         this.content = content;
+        this.memberId = memberId;
     }
 }
