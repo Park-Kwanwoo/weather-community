@@ -1,11 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import PostListView from '../views/post/PostListView.vue'
-import PostWriteView from '../views/post/PostWriteView.vue'
-import PostView from '../views/post/PostView.vue'
-import PostEditView from '../views/post/PostEditView.vue'
-import HomeView from '../views/HomeView.vue'
-import LoginView from '../views/user/LoginView.vue'
-import JoinView from '../views/user/JoinView.vue'
+import PostListView from '@/views/post/PostListView.vue'
+import PostWriteView from '@/views/post/PostWriteView.vue'
+import PostView from '@/views/post/PostView.vue'
+import PostEditView from '@/views/post/PostEditView.vue'
+import HomeView from '@/views/HomeView.vue'
+import LoginView from '@/views/user/LoginView.vue'
+import JoinView from '@/views/user/JoinView.vue'
+import MyPageView from '@/views/user/MyPageView.vue'
+import MyPageEditView from '@/views/user/MyPageEditView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +49,18 @@ const router = createRouter({
       path: '/join',
       name: 'join',
       component: JoinView,
+      props: true
+    },
+    {
+      path: '/myPage',
+      name: 'myPage',
+      component: MyPageView,
+      props: true
+    },
+    {
+      path: '/myPageEdit',
+      name: 'myPageEdit',
+      component: MyPageEditView,
       props: true
     }
   ]
