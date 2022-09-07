@@ -2,19 +2,28 @@
 import {ref} from "vue";
 import axios from "axios";
 import {useRouter} from "vue-router";
+import {useAuthStore} from "@/stores/auth";
+import {storeToRefs} from "pinia";
 
 const title = ref("")
 const content = ref("")
 const router = useRouter();
+const auth = useAuthStore();
+const { getUser }  = storeToRefs(auth);
+
 
 const write = function () {
   axios.post("/api/posts/create", {
     title: title.value,
-    content: content.value
+    content: content.value,
+    member: getUser.value
   })
-  .then(() => {
-    router.replace({name: "posts"})
-  })
+      .then(() => {
+        router.replace({name: "posts"})
+      })
+      .catch(e => {
+        console.log(e.response.data)
+      })
 };
 </script>
 
