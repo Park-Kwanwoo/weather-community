@@ -4,8 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.project.weathercommunity.domain.base.BaseTimeEntity;
+import org.project.weathercommunity.domain.post.Post;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -29,6 +33,9 @@ public class Member extends BaseTimeEntity {
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
+
+    @OneToMany(orphanRemoval = true, mappedBy = "member")
+    private List<Post> posts = new ArrayList<>();
 
     @Builder
     public Member(String email, String password, String name, String phone) {
