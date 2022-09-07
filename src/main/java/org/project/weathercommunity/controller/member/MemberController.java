@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.exception.MemberDuplicateException;
 import org.project.weathercommunity.request.member.MemberCreate;
 import org.project.weathercommunity.request.member.MemberEdit;
+import org.project.weathercommunity.response.member.MemberMypageResponse;
 import org.project.weathercommunity.service.member.MemberService;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,6 +28,10 @@ public class MemberController {
             throw new MemberDuplicateException("email", "중복된 이메일입니다.");
         }
 
+    }
+    @GetMapping("/members/{memberId}")
+    public MemberMypageResponse get(@PathVariable("memberId") Long id, Authentication authentication) {
+        return memberService.get(id, authentication);
     }
 
     @PatchMapping("/members/{memberId}")
