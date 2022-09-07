@@ -13,11 +13,12 @@ import javax.validation.constraints.Pattern;
 @ToString
 public class MemberEdit {
 
-    @NotBlank(message = "비밀번호를 입력해주세요.")
-    @Pattern(regexp = "^.*(?=^.{8,15}$)(?=.*\\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$",
-            message = "숫자, 문자, 특수문자 포함 8~15자리 이내로 입력해주세요.")
-    private String password;
+//    @NotBlank(message = "비밀번호를 입력해주세요.")
+//    @Pattern(regexp = "^.*(?=^.{8,15}$)(?=.*\\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$",
+//            message = "숫자, 문자, 특수문자 포함 8~15자리 이내로 입력해주세요.")
+//    private String password;
     @NotBlank(message = "이름을 입력해주세요.")
+    @Pattern(message = "제대로된 이름을 입력해주세요.", regexp = "^[가-힣]+$")
     private String name;
 
     @NotBlank(message = "전화번호를 입력해주세요.")
@@ -26,7 +27,7 @@ public class MemberEdit {
 
     @Builder
     public MemberEdit(String password, String name, String phone) {
-        this.password = password;
+//        this.password = password;
         this.name = name;
         this.phone = phone;
     }
