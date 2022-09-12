@@ -20,7 +20,7 @@ public class WeatherService {
     private static final String PAGE_NO = "1";
     private static final String DATA_TYPE = "JSON";
 
-    public Mono<String> getDayWeather(WeatherInfo weatherInfo) {
+    public Mono<String> ultraShortLiveInquiry(WeatherInfo weatherInfo) {
 
         DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(BASE_URL);
         factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
@@ -31,7 +31,7 @@ public class WeatherService {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
 
-        Map<String, Integer> transfer = GpsTransfer.transfer(Double.parseDouble(weatherInfo.getNx()), Double.parseDouble(weatherInfo.getNy()));
+        Map<String, Integer> transfer = GpsTransfer.transfer(weatherInfo.getLongitude(), weatherInfo.getLatitude());
 
         return webClient.get()
                 .uri(uriBuilder ->
@@ -42,10 +42,20 @@ public class WeatherService {
                                 .queryParam("dataType", DATA_TYPE)
                                 .queryParam("nx", transfer.get("nx"))
                                 .queryParam("ny", transfer.get("ny"))
-                                .queryParam("base_date", "20220911")
+                                .queryParam("base_date", "20220912")
                                 .queryParam("base_time", "1200")
                                 .build())
                 .retrieve()
                 .bodyToMono(String.class);
+    }
+
+    public Mono<String> ultraShortForecast(WeatherInfo weatherInfo) {
+
+        return null;
+    }
+
+    public Mono<String> shortForecast(WeatherInfo weatherInfo) {
+
+        return null;
     }
 }
