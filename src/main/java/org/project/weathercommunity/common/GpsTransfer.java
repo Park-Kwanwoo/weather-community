@@ -12,7 +12,6 @@ import static java.lang.Math.*;
 @Setter
 @ToString
 public class GpsTransfer {
-
     private double lat; // gps로 반환받은 위도 (x좌표 값)
     private double lon; // gps로 반환받은 경도 (y좌표 값)
 
@@ -24,8 +23,12 @@ public class GpsTransfer {
         this.lon = lon;
     }
 
-    public static Map<String, Integer> transfer(double latitude, double longitude) {
+    public static Map<String, Integer> transfer(double longitude, double latitude) {
 
+        /**
+         * LCC DFS 좌표 변환
+         * "TO_GRID"(위경도-> 좌표, lat_Y: 위도, lng_X: 경도)
+         */
         final double RE = 6371.00877;  // 지구 반경(km)
         final double GRID = 5.0;       // 격자 간격(km)
         final double SLAT1 = 30.0;     // 투영 위도1(degree)
@@ -34,11 +37,6 @@ public class GpsTransfer {
         final double OLAT = 38.0;      // 기준점 위도(degree)
         final double XO = 43;          // 기준점 X좌표(GRID)
         final double YO = 136;         // 기준점 Y좌표(GRID)
-
-        /**
-         * LCC DFS 좌표 변환
-         * (code : "TO_GRID"(위경도-> 좌표, lat_X: 위도, lng_Y: 경도), "TO_GPS"(좌표-> 위경도, lat_X:x, lat_Y:y))
-         */
 
         final double DEGRAD = PI / 180.0;
         final double RADDEG = 180.0 / PI;
@@ -65,7 +63,6 @@ public class GpsTransfer {
         theta *= sn;
         int x = (int) (floor(ra * sin(theta)) + XO);
 		int y = (int) (floor(ro - ra*cos(theta)) + YO);
-
 
         return Map.of("nx", x, "ny", y);
     }
