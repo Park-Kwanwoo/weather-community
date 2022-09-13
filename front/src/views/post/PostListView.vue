@@ -1,3 +1,18 @@
+<template>
+  <div>
+    <ul>
+      <li v-for="post in posts" :key="post.id">
+        <div class="title">
+          <router-link :to="{name: 'post', params: { postId: post.id}}">{{ post.title }}</router-link>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div>
+    <el-button v-if="isAuth" type="primary" @click="write">글 작성</el-button>
+  </div>
+</template>
+
 <script setup lang="ts">
 import axios from "axios";
 import {ref} from "vue";
@@ -20,20 +35,6 @@ const write = function () {
 };
 </script>
 
-<template>
-  <div>
-    <ul>
-      <li v-for="post in posts" :key="post.id">
-        <div class="title">
-          <router-link :to="{name: 'post', params: { postId: post.id}}">{{ post.title }}</router-link>
-        </div>
-      </li>
-    </ul>
-  </div>
-  <div>
-    <el-button v-if="isAuth" type="primary" @click="write">글 작성</el-button>
-  </div>
-</template>
 
 <style scoped>
 ul {
