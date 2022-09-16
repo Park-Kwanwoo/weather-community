@@ -1,10 +1,10 @@
 package org.project.weathercommunity.service.weather;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.parser.ParseException;
 import org.project.weathercommunity.common.GpsTransfer;
-import org.project.weathercommunity.request.weather.WeatherInfo;
+import org.project.weathercommunity.common.WeatherResponseParser;
+import org.project.weathercommunity.request.weather.WeatherRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class WeatherService {
 
     private static final String BASE_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0";
@@ -23,7 +24,7 @@ public class WeatherService {
     private static final String PAGE_NO = "1";
     private static final String DATA_TYPE = "JSON";
 
-    public Mono<String> ultraShortForecast(WeatherInfo weatherInfo) throws JsonProcessingException {
+    public Mono<Object> ultraShortForecast(WeatherRequest weatherRequest) {
 
         DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(BASE_URL);
         factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
@@ -34,7 +35,7 @@ public class WeatherService {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
 
-        Map<String, Integer> transfer = GpsTransfer.transfer(weatherInfo.getLongitude(), weatherInfo.getLatitude());
+        Map<String, Integer> transfer = GpsTransfer.transfer(weatherRequest.getLongitude(), weatherRequest.getLatitude());
 
         return webClient.get()
                 .uri(uriBuilder ->
@@ -45,10 +46,18 @@ public class WeatherService {
                                 .queryParam("dataType", DATA_TYPE)
                                 .queryParam("nx", transfer.get("nx"))
                                 .queryParam("ny", transfer.get("ny"))
-                                .queryParam("base_date", weatherInfo.getBaseDate())
-                                .queryParam("base_time", weatherInfo.getBaseTime())
+                                .queryParam("base_date", weatherRequest.getBaseDate())
+                                .queryParam("base_time", weatherRequest.getBaseTime())
                                 .build())
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(String.class)
+                .map(s -> {
+                    try {
+                        return WeatherResponseParser.Parse(s);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
+
 }
