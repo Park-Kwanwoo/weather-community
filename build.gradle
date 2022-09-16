@@ -53,6 +53,10 @@ dependencies {
     // Spring docs
     asciidoctorExt "org.springframework.restdocs:spring-restdocs-asciidoctor:${asciidocVersion}"
     testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:${asciidocVersion}"
+
+    // json
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
 }
 
 tasks.named('test') {
