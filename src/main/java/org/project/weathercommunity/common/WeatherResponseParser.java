@@ -29,9 +29,7 @@ public class WeatherResponseParser {
 
         // item들을 담을 List
         JSONObject object;
-        String category;
         String fcstTime;
-        String fcstValue;
         String lgt;
         String pty;
         String rn1;
@@ -97,9 +95,11 @@ public class WeatherResponseParser {
                     break;
             }
             object = (JSONObject) parse_item.get(i + 24);
-            t1h = (String) object.get("fcstValue") + "°C";
+            t1h = (String) object.get("fcstValue");
+            t1h = t1h + "°C";
             object = (JSONObject) parse_item.get(i + 30);
-            reh = (String) object.get("fcstValue") + "%";
+            reh = (String) object.get("fcstValue");
+            reh = reh + "%";
             object = (JSONObject) parse_item.get(i + 36);
             uuu = (String) object.get("fcstValue");
             object = (JSONObject) parse_item.get(i + 42);
@@ -107,7 +107,8 @@ public class WeatherResponseParser {
             object = (JSONObject) parse_item.get(i + 48);
             vec = (String) object.get("fcstValue");
             object = (JSONObject) parse_item.get(i + 54);
-            wsd = (String) object.get("fcstValue") + "m/s";
+            wsd = (String) object.get("fcstValue");
+            wsd = wsd + "m/s";
 
             responseList.add(WeatherResponse.builder()
                     .fcstTime(fcstTime)
