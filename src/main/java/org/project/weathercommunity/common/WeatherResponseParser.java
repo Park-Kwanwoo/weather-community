@@ -10,18 +10,12 @@ import org.json.simple.parser.ParseException;
 import org.project.weathercommunity.response.weather.WeatherResponse;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
 @Slf4j
 public class WeatherResponseParser {
-
-    enum WeatherValue {
-        LGT, PTY, SKY, REH, RN1, T1H, UUU, VEC, VVV, WSD
-    }
 
     public static List<WeatherResponse> Parse(String data) throws ParseException {
 
@@ -50,7 +44,6 @@ public class WeatherResponseParser {
         String wsd;
 
 
-        Map<String, WeatherResponse> response = new LinkedHashMap<>();
         List<WeatherResponse> responseList = new ArrayList<>();
 
         // category 횟수 만큼 나눈다.
