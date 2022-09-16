@@ -20,6 +20,7 @@
 <script setup lang="ts">
 import axios from "axios";
 import {ref} from "vue";
+
 const mapKey = import.meta.env.VITE_MAP_KEY;
 
 let date = new Date();
@@ -71,7 +72,7 @@ script.onload = () => {
     if (navigator.geolocation) {
 
       // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-      navigator.geolocation.getCurrentPosition(function(position) {
+      navigator.geolocation.getCurrentPosition(function (position) {
 
         let lat = position.coords.latitude, // 위도
             lon = position.coords.longitude; // 경도
@@ -116,9 +117,13 @@ script.onload = () => {
         latitude: parseFloat(latitude),   // 위도
       })
           .then(r => {
-            console.log(r.data.forEach((d: any) => {
+
+            if (weatherData.value.length != 0) {
+              weatherData.value.length = 0;
+            }
+            r.data.forEach((d: any) => {
               weatherData.value.push(d)
-            }))
+            });
           })
           .catch(e => {
             console.log(e.response.data)
