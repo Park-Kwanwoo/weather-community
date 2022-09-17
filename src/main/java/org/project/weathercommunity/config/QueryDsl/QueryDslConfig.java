@@ -1,4 +1,4 @@
-package org.project.weathercommunity.config;
+package org.project.weathercommunity.config.QueryDsl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Bean;
