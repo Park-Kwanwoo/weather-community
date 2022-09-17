@@ -2,7 +2,7 @@ package org.project.weathercommunity.controller.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.exception.WeatherCommunityException;
-import org.project.weathercommunity.response.ErrorResponse;
+import org.project.weathercommunity.response.error.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

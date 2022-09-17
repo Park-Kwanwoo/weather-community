@@ -1,4 +1,4 @@
-package org.project.weathercommunity.response;
+package org.project.weathercommunity.response.error;
 
 import lombok.Builder;
 import lombok.Getter;

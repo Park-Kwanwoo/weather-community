@@ -1,7 +1,7 @@
 package org.project.weathercommunity.config.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.project.weathercommunity.response.ErrorResponse;
+import org.project.weathercommunity.response.error.ErrorResponse;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
