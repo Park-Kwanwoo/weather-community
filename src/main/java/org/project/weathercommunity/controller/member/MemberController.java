@@ -22,7 +22,7 @@ public class MemberController {
     @PostMapping("/members/join")
     public void join(@RequestBody @Valid MemberCreate memberCreate) {
 
-        if (memberService.duplicateCheck(memberCreate.getEmail())) {
+        if (!memberService.duplicateCheck(memberCreate.getEmail())) {
             memberService.join(memberCreate);
         } else {
             throw new MemberDuplicateException("email", "중복된 이메일입니다.");

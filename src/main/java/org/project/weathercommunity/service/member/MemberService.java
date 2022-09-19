@@ -85,9 +85,6 @@ public class MemberService {
     }
 
     public boolean duplicateCheck(String email) {
-
-        Optional<Member> validEmail = memberRepository.findByEmail(email);
-
-        return validEmail.isEmpty();
+        return memberRepository.existsByEmail(email);
     }
 }
