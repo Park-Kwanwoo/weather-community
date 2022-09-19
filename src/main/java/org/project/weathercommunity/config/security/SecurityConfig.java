@@ -1,11 +1,9 @@
 package org.project.weathercommunity.config.security;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.project.weathercommunity.config.security.filter.JwtAuthenticationFilter;
 import org.project.weathercommunity.config.security.filter.VueLoginProcessingFilter;
-import org.project.weathercommunity.config.security.handler.VueAccessDeniedHandler;
-import org.project.weathercommunity.config.security.handler.VueAuthenticationFailureHandler;
-import org.project.weathercommunity.config.security.handler.VueAuthenticationSuccessHandler;
-import org.project.weathercommunity.config.security.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,17 +19,23 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 
 @EnableWebSecurity
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
 @Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService();
-    }
+    private final UserDetailsService userDetailsService;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final AccessDeniedHandler accessDeniedHandler;
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
+    private final AuthenticationFailureHandler authenticationFailureHandler;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
     PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -51,33 +55,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/posts/create").hasRole("USER")
                 .antMatchers("/members/**").hasRole("USER")
                 .anyRequest().authenticated()
-        .and()
+                .and()
 
-                .addFilterBefore(new VueLoginProcessingFilter(authenticationManagerBean(), customAuthenticationSuccessHandler(), customAuthenticationFailureHandler()), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new VueLoginProcessingFilter(authenticationManagerBean(), authenticationSuccessHandler, authenticationFailureHandler), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, SecurityContextHolderFilter.class)
+
+        ;
 
         http
                 .exceptionHandling()
-                .authenticationEntryPoint(customAuthenticationEntryPoint())
-                .accessDeniedHandler(customAccessDeniedHandler());
-    }
-
-    @Bean
-    public AuthenticationEntryPoint customAuthenticationEntryPoint() {
-        return new VueAuthenticationEntryPoint();
-    }
-
-    @Bean
-    public AccessDeniedHandler customAccessDeniedHandler() {
-        return new VueAccessDeniedHandler();
-    }
-    @Bean
-    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
-        return new VueAuthenticationSuccessHandler();
-    }
-
-    @Bean
-    public AuthenticationFailureHandler customAuthenticationFailureHandler() {
-        return new VueAuthenticationFailureHandler();
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler);
     }
 
 
