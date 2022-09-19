@@ -1,3 +1,17 @@
+<template>
+  <div>
+    <el-input v-model="title" placeholder="제목을 입력해주세요"/>
+  </div>
+
+  <div class="mt-2">
+    <el-input v-model="content" type="textarea" rows="15"></el-input>
+  </div>
+
+  <div class="mt-2">
+    <el-button type="primary" @click="write()">글 작성</el-button>
+  </div>
+</template>
+
 <script setup lang="ts">
 import {ref} from "vue";
 import axios from "axios";
@@ -26,20 +40,6 @@ const write = function () {
       })
 };
 </script>
-
-<template>
-  <div>
-    <el-input v-model="title" placeholder="제목을 입력해주세요"/>
-  </div>
-
-  <div class="mt-2">
-    <el-input v-model="content" type="textarea" rows="15"></el-input>
-  </div>
-
-  <div class="mt-2">
-    <el-button type="primary" @click="write()">글 작성</el-button>
-  </div>
-</template>
 
 <style scoped>
 
