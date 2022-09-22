@@ -1,6 +1,7 @@
 package org.project.weathercommunity.config.security.provider;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.config.security.service.CustomUserDetails;
 import org.project.weathercommunity.config.security.token.VueAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -25,7 +26,6 @@ public class VueAuthenticationProvider implements AuthenticationProvider {
         String email = authentication.getName();
         String password = (String) authentication.getCredentials();
 
-        // 바꿔야함
         CustomUserDetails member = (CustomUserDetails) userDetailsService.loadUserByUsername(email);
 
         if (!passwordEncoder.matches(password, member.getMember().getPassword())) {
