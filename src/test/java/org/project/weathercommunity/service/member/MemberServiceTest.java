@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.project.weathercommunity.domain.member.Member;
 import org.project.weathercommunity.domain.member.Role;
-import org.project.weathercommunity.exception.MemberNotFound;
+import org.project.weathercommunity.exception.MemberNotFoundException;
 import org.project.weathercommunity.repository.member.MemberRepository;
 import org.project.weathercommunity.request.member.MemberCreate;
 import org.project.weathercommunity.request.member.MemberEdit;
@@ -115,7 +115,7 @@ class MemberServiceTest {
         memberService.delete(member.getId());
 
         // then
-        assertThrows(MemberNotFound.class, () -> {
+        assertThrows(MemberNotFoundException.class, () -> {
            memberService.delete(member.getId());
         });
     }
