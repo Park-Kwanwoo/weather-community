@@ -1,11 +1,9 @@
 package org.project.weathercommunity.request.post;
 
 import lombok.*;
-import org.project.weathercommunity.domain.member.Member;
-import org.project.weathercommunity.exception.InvalidRequest;
+import org.project.weathercommunity.exception.InvalidRequestException;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -19,19 +17,16 @@ public class PostCreate {
     @NotBlank(message = "콘텐츠를 입력하세요.")
     private String content;
 
-    @NotNull
-    private Member member;
 
     @Builder
-    public PostCreate(String title, String content, Member member) {
+    public PostCreate(String title, String content) {
         this.title = title;
         this.content = content;
-        this.member = member;
     }
 
     public void validate() {
         if (title.contains("바보")) {
-            throw new InvalidRequest("title", "제목에 바보를 포함할 수 없습니다.");
+            throw new InvalidRequestException("title", "제목에 바보를 포함할 수 없습니다.");
         }
     }
 }
