@@ -4,7 +4,8 @@ import {defineStore} from "pinia";
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         isAuth: false,
-        accessToken: ''
+        accessToken: '',
+        email: ''
     }),
     getters: {
         getIsAuth(state) {
@@ -12,6 +13,9 @@ export const useAuthStore = defineStore('auth', {
         },
         getAccessToken(state) {
             return state.accessToken;
+        },
+        getEmail(state) {
+            return state.email;
         }
     },
     actions: {
@@ -21,9 +25,13 @@ export const useAuthStore = defineStore('auth', {
         setAuth(boolean: boolean) {
             this.isAuth = boolean;
         },
+        setEmail(email: any) {
+            this.email = email;
+        },
         clear() {
             this.isAuth = false;
             this.accessToken = '';
+            this.email = '';
         }
     },
     persist: true
