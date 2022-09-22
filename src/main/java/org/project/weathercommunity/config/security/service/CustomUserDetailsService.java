@@ -2,7 +2,7 @@ package org.project.weathercommunity.config.security.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.domain.member.Member;
-import org.project.weathercommunity.exception.MemberNotFound;
+import org.project.weathercommunity.exception.MemberNotFoundException;
 import org.project.weathercommunity.repository.member.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +17,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     private MemberRepository memberRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws MemberNotFound {
+    public UserDetails loadUserByUsername(String email) throws MemberNotFoundException {
 
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(MemberNotFound::new);
+                .orElseThrow(MemberNotFoundException::new);
 
         return new CustomUserDetails(member);
     }
