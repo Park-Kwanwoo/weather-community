@@ -2,12 +2,13 @@ package org.project.weathercommunity.exception;
 
 public class JwtExpiredException extends WeatherCommunityException {
 
-    public JwtExpiredException(String message) {
-        super(message);
+    private static final String MESSAGE = "만료된 토큰입니다.";
+    public JwtExpiredException() {
+        super(MESSAGE);
     }
 
-    public JwtExpiredException(String message, Throwable cause) {
-        super(message, cause);
+    public JwtExpiredException(Throwable cause) {
+        super(MESSAGE, cause);
     }
 
     // UnAuthorized
