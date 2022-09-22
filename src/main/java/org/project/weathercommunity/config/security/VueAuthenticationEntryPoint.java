@@ -1,5 +1,7 @@
 package org.project.weathercommunity.config.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -12,14 +14,17 @@ import java.io.IOException;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class VueAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
+    private final ObjectMapper objectMapper;
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
         log.info("VueAuthenticationEntryPoint");
+
         // UnAuthorized (401)
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "UnAuthorized");
+        objectMapper.writeValue(response.getWriter(), exception.getMessage());
 
     }
 }
