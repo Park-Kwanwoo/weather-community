@@ -7,10 +7,10 @@ import org.project.weathercommunity.domain.base.BaseTimeEntity;
 import org.project.weathercommunity.domain.post.Post;
 
 import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -19,8 +19,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class Member extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     private String email;
