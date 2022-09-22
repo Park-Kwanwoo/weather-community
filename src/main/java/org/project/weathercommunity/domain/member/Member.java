@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.project.weathercommunity.domain.base.BaseTimeEntity;
 import org.project.weathercommunity.domain.post.Post;
+import org.project.weathercommunity.domain.token.Token;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -35,6 +36,9 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(orphanRemoval = true, mappedBy = "member")
     private List<Post> posts = new ArrayList<>();
+
+    @OneToOne(orphanRemoval = true, mappedBy = "member")
+    private Token token;
 
     @Builder
     public Member(String email, String password, String name, String phone) {
