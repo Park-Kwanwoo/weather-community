@@ -36,9 +36,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void edit(Long id, MemberEdit memberEdit) {
+    public void edit(String email, MemberEdit memberEdit) {
 
-        Member member = memberRepository.findById(id)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(MemberNotFoundException::new);
 
         MemberEditor.MemberEditorBuilder editorBuilder = member.toEditor();
@@ -53,9 +53,9 @@ public class MemberService {
         member.edit(memberEditor);
     }
 
-    public void delete(Long id) {
+    public void delete(String email) {
 
-        Member member = memberRepository.findById(id)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(MemberNotFoundException::new);
 
         memberRepository.delete(member);

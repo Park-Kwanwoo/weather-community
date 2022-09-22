@@ -18,7 +18,6 @@ import javax.validation.Valid;
 public class MemberController {
 
     private final MemberService memberService;
-
     @PostMapping("/members/join")
     public void join(@RequestBody @Valid MemberCreate memberCreate) {
 
@@ -29,18 +28,19 @@ public class MemberController {
         }
 
     }
-    @GetMapping("/members/{memberId}")
-    public MemberMypageResponse get(@PathVariable("memberId") Long id, Authentication authentication) {
-        return memberService.get(id, authentication);
+    @GetMapping("/members/{memberEmail}")
+    public MemberMypageResponse get(@PathVariable("memberEmail") String email) {
+        return memberService.get(email);
     }
 
-    @PatchMapping("/members/{memberId}")
-    public void edit(@PathVariable("memberId") Long id, @RequestBody @Valid MemberEdit memberEdit) {
-        memberService.edit(id, memberEdit);
+    @PatchMapping("/members/{memberEmail}")
+    public void edit(@PathVariable("memberEmail") String email, @RequestBody @Valid MemberEdit memberEdit) {
+        memberService.edit(email, memberEdit);
     }
 
-    @DeleteMapping("/members/{memberId}")
-    public void delete(@PathVariable("memberId") Long id) {
-        memberService.delete(id);
+    @DeleteMapping("/members/{memberEmail}")
+    public void delete(@PathVariable("memberEmail") String email) {
+        memberService.delete(email);
     }
+
 }
