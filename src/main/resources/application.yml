@@ -21,11 +21,12 @@ spring:
     web:
       pageable:
         one-indexed-parameters: true
+  profiles:
+    include: oauth
 
 #logging:
 #  level:
 #    root: debug
-
 
 
 # secret 값은 특정 문자열을 Base64로 인코딩한 값 사용
@@ -33,8 +34,9 @@ spring:
 # 1800000 30분
 # 604800000 1주일
 
+---
 jwt:
-  header: Authorization
   secret: aGVsbG8tbXktcmVhbC1uYW1lLWlzLWt3YW53b28tdGhpcy1rZXktaXMtdmVyeS1pbXBvcnRhbnQtc28tYmUtY2FyZWZ1bC10aGFuay15b3U=
   access-token-expire-time: 1800000
   refresh-token-expire-time: 604800000
+
