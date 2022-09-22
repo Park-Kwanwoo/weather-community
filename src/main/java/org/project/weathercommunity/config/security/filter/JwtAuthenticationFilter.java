@@ -34,8 +34,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             String accessToken = jwtToken.resolveToken(request);
-            log.info("accessToken = {}", accessToken);
-
 
             if (accessToken != null && jwtToken.validTokenExpired(accessToken)) {         // accessToken이 Null이 아니면서 만료되지 읺았을 때
                 log.info("token이 만료 되지 않았습니다.");
