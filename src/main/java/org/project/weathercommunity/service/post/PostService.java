@@ -2,14 +2,17 @@ package org.project.weathercommunity.service.post;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.project.weathercommunity.domain.member.Member;
 import org.project.weathercommunity.domain.post.Post;
 import org.project.weathercommunity.domain.post.PostEditor;
-import org.project.weathercommunity.exception.PostNotFound;
+import org.project.weathercommunity.exception.MemberNotFoundException;
+import org.project.weathercommunity.exception.PostNotFoundException;
 import org.project.weathercommunity.repository.post.PostRepository;
 import org.project.weathercommunity.request.post.PostCreate;
 import org.project.weathercommunity.request.post.PostEdit;
 import org.project.weathercommunity.request.post.PostSearch;
 import org.project.weathercommunity.response.post.PostResponse;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,20 +26,28 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    public void write(PostCreate postCreate) {
-        // postCreate -> Entity
-        Post post = Post.builder()
-                .title(postCreate.getTitle())
-                .content(postCreate.getContent())
-                .member(postCreate.getMember())
-                .build();
-        postRepository.save(post);
+    public void write(PostCreate postCreate, Authentication authentication) {
+
+        Member member = (Member) authentication.getPrincipal();
+
+        if (member == null) {
+            throw new MemberNotFoundException();
+        } else {
+            // postCreate -> Entity
+            Post post = Post.builder()
+                    .title(postCreate.getTitle())
+                    .content(postCreate.getContent())
+                    .member(member)
+                    .build();
+            postRepository.save(post);
+        }
+
     }
 
     public PostResponse get(Long id) {
 
         Post post = postRepository.findById(id)
-                .orElseThrow(PostNotFound::new);
+                .orElseThrow(PostNotFoundException::new);
 
         return PostResponse.builder()
                 .id(post.getId())
@@ -56,7 +67,7 @@ public class PostService {
     @Transactional
     public void edit(Long id, PostEdit postedit) {
         Post post = postRepository.findById(id)
-                .orElseThrow(PostNotFound::new);
+                .orElseThrow(PostNotFoundException::new);
 
         PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
 
@@ -70,7 +81,7 @@ public class PostService {
 
     public void delete(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(PostNotFound::new);
+                .orElseThrow(PostNotFoundException::new);
 
         postRepository.delete(post);
     }
