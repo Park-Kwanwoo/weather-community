@@ -4,15 +4,15 @@ package org.project.weathercommunity.exception;
  * status -> 404
  */
 
-public class MemberNotFound extends WeatherCommunityException {
+public class MemberNotFoundException extends WeatherCommunityException {
 
     private static final String MESSAGE = "존재하지 않는 회원입니다.";
 
-    public MemberNotFound() {
+    public MemberNotFoundException() {
         super(MESSAGE);
     }
 
-    public MemberNotFound(Throwable cause) {
+    public MemberNotFoundException(Throwable cause) {
         super(MESSAGE, cause);
     }
 

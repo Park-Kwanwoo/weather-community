@@ -4,18 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.domain.member.Member;
 import org.project.weathercommunity.domain.member.MemberEditor;
-import org.project.weathercommunity.exception.InvalidRequest;
-import org.project.weathercommunity.exception.MemberNotFound;
+import org.project.weathercommunity.exception.MemberNotFoundException;
 import org.project.weathercommunity.repository.member.MemberRepository;
 import org.project.weathercommunity.request.member.MemberCreate;
 import org.project.weathercommunity.request.member.MemberEdit;
 import org.project.weathercommunity.response.member.MemberMypageResponse;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +21,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public void join(MemberCreate memberCreate) {
 
         Member member = Member.builder()
@@ -42,7 +39,7 @@ public class MemberService {
     public void edit(Long id, MemberEdit memberEdit) {
 
         Member member = memberRepository.findById(id)
-                .orElseThrow(MemberNotFound::new);
+                .orElseThrow(MemberNotFoundException::new);
 
         MemberEditor.MemberEditorBuilder editorBuilder = member.toEditor();
 
@@ -59,29 +56,24 @@ public class MemberService {
     public void delete(Long id) {
 
         Member member = memberRepository.findById(id)
-                .orElseThrow(MemberNotFound::new);
+                .orElseThrow(MemberNotFoundException::new);
 
         memberRepository.delete(member);
     }
 
-    public MemberMypageResponse get(Long id, Authentication authentication) {
+    public MemberMypageResponse get(String email) {
 
-        Member member = memberRepository.findById(id)
-                .orElseThrow(MemberNotFound::new);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
 
-        Member currentMember = (Member) authentication.getPrincipal();
+        return MemberMypageResponse.builder()
+                .id(member.getId())
+                .email(member.getEmail())
+                .password(member.getPassword())
+                .name(member.getName())
+                .phone(member.getPhone())
+                .build();
 
-        if (member.getId().equals(currentMember.getId())) {
-            return MemberMypageResponse.builder()
-                    .id(member.getId())
-                    .email(member.getEmail())
-                    .password(member.getPassword())
-                    .name(member.getName())
-                    .phone(member.getPhone())
-                    .build();
-        } else {
-            throw  new InvalidRequest("auth", "잘못된 접근입니다.");
-        }
     }
 
     public boolean duplicateCheck(String email) {
