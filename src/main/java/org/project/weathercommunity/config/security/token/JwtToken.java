@@ -1,26 +1,22 @@
 package org.project.weathercommunity.config.security.token;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
+import org.project.weathercommunity.config.security.service.CustomUserDetails;
 import org.project.weathercommunity.domain.member.Role;
-import org.project.weathercommunity.exception.JwtExpiredException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @Slf4j
 @Component
-public class JwtAuthenticationToken {
+public class JwtToken {
 
     private static final String AUTHORITIES_KEY = "auth";
-    private static final String BEARER_TYPE = "Bearer";
 
     private final long ACCESS_TOKEN_EXPIRE_TIME;
     private final long REFRESH_TOKEN_EXPIRE_TIME;
@@ -29,10 +25,10 @@ public class JwtAuthenticationToken {
 
     private final String key;
 
-    public JwtAuthenticationToken(@Value("${jwt.secret}") String secretKey,
-                                  @Value("${jwt.access-token-expire-time}") long accessTime,
-                                  @Value("${jwt.refresh-token-expire-time}") long refreshTime,
-                                  UserDetailsService userDetailsService) {
+    public JwtToken(@Value("${jwt.secret}") String secretKey,
+                    @Value("${jwt.access-token-expire-time}") long accessTime,
+                    @Value("${jwt.refresh-token-expire-time}") long refreshTime,
+                    UserDetailsService userDetailsService) {
         this.ACCESS_TOKEN_EXPIRE_TIME = accessTime;
         this.REFRESH_TOKEN_EXPIRE_TIME = refreshTime;
         this.userDetailsService = userDetailsService;
@@ -82,34 +78,33 @@ public class JwtAuthenticationToken {
     }
 
     public String getMemberEmailByToken(String token) {
+
         // 토큰의 claim의 sub 키에 이메일 값이 들어있다.
-        return this.parseClaims(token).getSubject();
+        try {
+            return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getSubject();
+        }
     }
 
     public Authentication getAuthentication(String accessToken) {
 
-        // 토큰 복호화
-        Claims claims = parseClaims(accessToken);
-        log.info("subject = {}", claims.getSubject());
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(getMemberEmailByToken(accessToken));
 
-        if (claims.get(AUTHORITIES_KEY) == null || !StringUtils.hasText(claims.get(AUTHORITIES_KEY).toString())) {
-            throw new IllegalArgumentException();
-        }
-
-        Authentication authentication = (Authentication) userDetailsService.loadUserByUsername(getMemberEmailByToken(accessToken));
-
-        log.info("principal = {}", authentication.getPrincipal());
-        log.info("authorities = {}", authentication.getAuthorities());
-
-        return new VueAuthenticationToken(authentication.getPrincipal(), "", authentication.getAuthorities());
+        return new VueAuthenticationToken(userDetails.getMember(), null, userDetails.getAuthorities());
     }
 
-    public Claims parseClaims(String accessToken) {
+    public boolean validTokenExpired(String token) {
 
         try {
-            return Jwts.parser().setSigningKey(key).parseClaimsJws(accessToken).getBody();
-        } catch (ExpiredJwtException e) {   // 만료된 토큰이 더라도 일단 파싱을 함
-            throw new JwtExpiredException("토큰 유효시간 만료입니다.");
+            Jws<Claims> claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException e) {
+            return false;
         }
+    }
+
+    public String resolveToken(HttpServletRequest request) {
+        return request.getHeader("Authorization");
     }
 }
