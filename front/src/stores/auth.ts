@@ -4,34 +4,26 @@ import {defineStore} from "pinia";
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         isAuth: false,
-        user: null,
-        role: ""
+        accessToken: ''
     }),
     getters: {
         getIsAuth(state) {
             return state.isAuth;
         },
-        getUser(state) {
-            return state.user;
-        },
-        getRole(state) {
-          return state.role;
+        getAccessToken(state) {
+            return state.accessToken;
         }
     },
     actions: {
-        setUser(user: any) {
-            this.user = user;
+        setAccessToken(accessToken: any) {
+            this.accessToken = accessToken;
         },
         setAuth(boolean: boolean) {
             this.isAuth = boolean;
         },
-        setRole(role: string){
-            this.role = role;
-        },
         clear() {
             this.isAuth = false;
-            this.role = '';
-            this.user = null;
+            this.accessToken = '';
         }
     },
     persist: true
