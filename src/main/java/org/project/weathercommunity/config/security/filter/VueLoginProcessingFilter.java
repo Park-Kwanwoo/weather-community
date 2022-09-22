@@ -35,7 +35,7 @@ public class VueLoginProcessingFilter extends AbstractAuthenticationProcessingFi
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
 
         if (!isAjax(request)) {
-            throw new IllegalArgumentException("Ajax 로그인 오류");
+            throw new IllegalArgumentException("로그인 오류");
         }
 
         MemberLogin memberLogin = objectMapper.readValue(request.getReader(), MemberLogin.class);
