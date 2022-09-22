@@ -1,3 +1,18 @@
+<template>
+  <div class="container">
+    <div class="title">
+      <h2>{{ post.title }}</h2>
+    </div>
+    <div class="content">
+      {{ post.content }}
+    </div>
+    <div>
+      <el-button type="primary" v-if="post.flag" @click="edit()">수정</el-button>
+      <el-button type="warning" v-if="post.flag" @click="remove()">삭제</el-button>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import {defineProps, onMounted, ref} from "vue";
 import axios from "axios";
@@ -23,7 +38,6 @@ const post = ref({
 const router = useRouter();
 const auth = useAuthStore();
 const { getIsAuth } = storeToRefs(auth);
-const { getUser } = storeToRefs(auth);
 
 
 const edit = () => {
@@ -43,25 +57,7 @@ const remove = () => {
 onMounted(() => {
   axios.get(`/api/posts/${props.postId}`).then((response) => {
     post.value = response.data;
-    if (getUser.value.id != null) {
-      post.value.flag = (getUser.value.id === post.value.memberId) && getIsAuth.value;
-    }
   })
 })
 
 </script>
-
-<template>
-  <div class="container">
-    <div class="title">
-      <h2>{{ post.title }}</h2>
-    </div>
-    <div class="content">
-      {{ post.content }}
-    </div>
-    <div>
-      <el-button type="primary" v-if="post.flag" @click="edit()">수정</el-button>
-      <el-button type="warning" v-if="post.flag" @click="remove()">삭제</el-button>
-    </div>
-  </div>
-</template>

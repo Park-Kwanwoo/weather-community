@@ -1,5 +1,4 @@
 <template>
-
   <div>
     <h3 class="text-gray-900 font-weight-bold">마이페이지</h3>
     <br/>
@@ -32,8 +31,15 @@ import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
 
 const auth = useAuthStore();
-const {getUser} = storeToRefs(auth);
 const router = useRouter();
+const { getEmail } = storeToRefs(auth);
+const { getAccessToken } = storeToRefs(auth)
+
+const configs = {
+  headers: {
+    Authorization: getAccessToken.value
+  }
+}
 
 const userInfo = ref({
   id: 0,
@@ -43,12 +49,12 @@ const userInfo = ref({
 })
 
 onMounted(() => {
-axios.get(`/api/members/${getUser.value.id}`)
+axios.get(`/api/members/${getEmail.value}`, configs)
     .then(r => {
       userInfo.value = r.data
     })
     .catch(e => {
-      console.log(e.response.data)
+      alert(e.response.data)
     })
 })
 const edit = function () {

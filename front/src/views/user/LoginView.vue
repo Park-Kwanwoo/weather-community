@@ -13,6 +13,8 @@
       <el-button type="primary" v-on:click.prevent="submitForm" class="btn-primary">로그인</el-button>
     </el-form-item>
   </el-form>
+  <a href="/oauth2/authorization/github">Github Login</a><br>
+  <a href="/oauth2/authorization/google">Google Login</a><br>
 </template>
 
 <script setup lang="ts">
@@ -24,7 +26,6 @@ import {storeToRefs} from "pinia";
 
 const router = useRouter();
 const auth = useAuthStore();
-const { user } = storeToRefs(auth);
 
 const loginData = reactive({
   email: '',
@@ -41,8 +42,8 @@ const submitForm = () => {
   axios.post("/api/members/login", loginData, configs)
       .then((r) => {
         auth.setAuth(true)
-        auth.setRole(r.data.role)
-        auth.setUser(r.data)
+        auth.setAccessToken(r.data.token);
+        auth.setEmail(r.data.email);
         router.replace({name: 'home'});
       })
       .catch(e => {

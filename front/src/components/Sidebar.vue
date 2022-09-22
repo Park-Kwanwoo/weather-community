@@ -8,7 +8,7 @@
     </el-menu-item>
     <el-menu-item index="2">
       <el-icon><document /></el-icon>
-      <template #title><router-link to="/posts">글 목록</router-link></template>
+      <el-link @click="posts">글 목록</el-link>
     </el-menu-item>
   </el-menu>
 </template>
@@ -23,6 +23,7 @@ import {
 import {useAuthStore} from "@/stores/auth";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
+import axios from "axios";
 
 
 const auth = useAuthStore();
@@ -34,6 +35,16 @@ const write = function () {
   if (getIsAuth.value) {
     console.log(getIsAuth.value);
     router.push({name: 'write'})
+  } else {
+    router.replace({name: 'login'})
+  }
+};
+
+const posts = function () {
+
+  if (getIsAuth.value) {
+    console.log(getIsAuth.value);
+    router.push({name: 'posts'})
   } else {
     router.replace({name: 'login'})
   }

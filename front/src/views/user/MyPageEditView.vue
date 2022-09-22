@@ -34,7 +34,8 @@ import {useRouter} from "vue-router";
 import router from "@/router";
 
 const auth = useAuthStore();
-const {getUser} = storeToRefs(auth);
+const { getAccessToken } = storeToRefs(auth);
+const { getEmail } = storeToRefs(auth);
 
 const userInfo = ref({
   id: 0,
@@ -44,20 +45,27 @@ const userInfo = ref({
   phone: ""
 })
 
-axios.get(`/api/members/${getUser.value.id}`)
+const configs = {
+  headers: {
+    Authorization: getAccessToken.value
+  }
+}
+
+axios.get(`/api/members/${getEmail.value}`, configs)
     .then(r => {
       userInfo.value = r.data
     })
     .catch(e => {
-      console.log(e.response.data)
+      alert(e.response.data)
+      router.push({name: 'home'})
     })
 
 const edit = function () {
-  axios.patch(`/api/members/${getUser.value.id}`, {
+  axios.patch(`/api/members/${getEmail.value}`, {
     password: userInfo.value.password,
     name: userInfo.value.name,
     phone: userInfo.value.phone,
-  })
+  }, configs)
       .then(r => {
         router.replace({name: 'myPage'})
       })
@@ -68,13 +76,15 @@ const edit = function () {
 
 
 const remove = () => {
-  axios.delete(`/api/members/${getUser.value.id}`)
+  axios.delete(`/api/members/${getEmail.value}`, configs)
       .then(r => {
         auth.clear();
         router.replace({name: 'home'})
       })
       .catch(e => {
-        console.log(e.response.data)
+        alert(e.response.data)
+        auth.clear();
+        router.push({name: 'home'})
       })
 }
 </script>

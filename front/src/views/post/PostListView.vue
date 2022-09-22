@@ -23,10 +23,19 @@ import router from "@/router";
 const auth = useAuthStore();
 const posts = ref([])
 const { isAuth } = storeToRefs(auth)
+const { getAccessToken } = storeToRefs(auth);
 
-axios.get("/api/posts?page=1&size=10").then((response) => {
+const configs = {
+  headers: {
+    Authorization: getAccessToken.value
+  }
+}
+
+axios.get("/api/posts?page=1&size=10", configs).then((response) => {
   response.data.forEach((r: any) => {
     posts.value.push(r);
+  }).catch((e: any) => {
+    console.log(e.response.data)
   })
 })
 

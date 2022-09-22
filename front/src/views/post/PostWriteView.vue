@@ -23,20 +23,24 @@ const title = ref("")
 const content = ref("")
 const router = useRouter();
 const auth = useAuthStore();
-const { getUser }  = storeToRefs(auth);
-
+const { getAccessToken } = storeToRefs(auth)
+const configs = {
+  headers: {
+    Authorization: getAccessToken.value
+  }
+}
 
 const write = function () {
   axios.post("/api/posts/create", {
     title: title.value,
     content: content.value,
-    member: getUser.value
-  })
+  },  configs)
       .then(() => {
         router.replace({name: "posts"})
       })
       .catch(e => {
-        console.log(e.response.data)
+        auth.clear();
+        router.push({name: "login"})
       })
 };
 </script>
