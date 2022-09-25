@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.request.post.PostCreate;
 import org.project.weathercommunity.request.post.PostEdit;
 import org.project.weathercommunity.request.post.PostSearch;
-import org.project.weathercommunity.response.post.PostResponse;
+import org.project.weathercommunity.response.post.PostListResponse;
+import org.project.weathercommunity.response.post.PostOneResponse;
 import org.project.weathercommunity.service.post.PostService;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -39,22 +40,27 @@ public class PostController {
      */
 
     @GetMapping("/posts/{postId}")
-    public PostResponse get(@PathVariable(name = "postId") Long id) {
+    public PostOneResponse get(@PathVariable(name = "postId") Long id) {
         return postService.get(id);
     }
 
     @GetMapping("/posts")
-    public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
+    public List<PostListResponse> getList(@ModelAttribute PostSearch postSearch) {
         return postService.getList(postSearch);
     }
 
     @PatchMapping("/posts/{postId}")
     public void edit(@PathVariable(value = "postId") Long id, @RequestBody @Valid PostEdit postEdit) {
-        postService.edit(id,postEdit);
+        postService.edit(id, postEdit);
     }
 
     @DeleteMapping("/posts/{postId}")
     public void delete(@PathVariable(value = "postId") Long id) {
         postService.delete(id);
+    }
+
+    @GetMapping("/post/totalPage")
+    public long totalPage() {
+        return postService.totalPage();
     }
 }
