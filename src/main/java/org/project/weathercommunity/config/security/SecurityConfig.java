@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.config.security.filter.JwtAuthenticationFilter;
 import org.project.weathercommunity.config.security.filter.VueLoginProcessingFilter;
-import org.project.weathercommunity.service.oauth.OauthService;
+import org.project.weathercommunity.config.security.handler.VueLogoutSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,10 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AccessDeniedHandler accessDeniedHandler;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
-
-    private final OauthService oauthService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -68,13 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .addFilterBefore(new VueLoginProcessingFilter(authenticationManagerBean(), authenticationSuccessHandler, authenticationFailureHandler), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-
         ;
-
-        http
-                .oauth2Login()
-                .userInfoEndpoint()
-                .userService(oauthService);
 
         http
                 .exceptionHandling()
