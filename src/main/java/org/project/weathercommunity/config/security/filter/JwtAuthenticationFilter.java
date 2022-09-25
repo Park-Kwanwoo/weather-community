@@ -66,7 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 } else {
                     log.info("refreshToken 만료. 재 로그인 부탁드립니다.");
                     tokenService.deleteToken(member);
-
+                    SecurityContextHolder.clearContext();
                     throw new JwtExpiredException();
                 }
 
