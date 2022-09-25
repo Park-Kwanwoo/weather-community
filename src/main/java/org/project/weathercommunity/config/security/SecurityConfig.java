@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.config.security.filter.JwtAuthenticationFilter;
 import org.project.weathercommunity.config.security.filter.VueLoginProcessingFilter;
-import org.project.weathercommunity.config.security.handler.VueLogoutSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
