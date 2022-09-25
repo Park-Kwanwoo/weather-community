@@ -2,6 +2,7 @@ package org.project.weathercommunity.service.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.project.weathercommunity.config.security.token.JwtToken;
 import org.project.weathercommunity.domain.member.Member;
 import org.project.weathercommunity.domain.member.MemberEditor;
 import org.project.weathercommunity.exception.MemberNotFoundException;
@@ -9,9 +10,14 @@ import org.project.weathercommunity.repository.member.MemberRepository;
 import org.project.weathercommunity.request.member.MemberCreate;
 import org.project.weathercommunity.request.member.MemberEdit;
 import org.project.weathercommunity.response.member.MemberMypageResponse;
+import org.project.weathercommunity.service.token.TokenService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +26,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
+    private final JwtToken jwtToken;
 
     @Transactional
     public void join(MemberCreate memberCreate) {
@@ -78,5 +86,15 @@ public class MemberService {
 
     public boolean duplicateCheck(String email) {
         return memberRepository.existsByEmail(email);
+    }
+
+    public void logout(HttpServletRequest request) {
+
+        log.info("로그아웃..");
+        String accessToken = jwtToken.resolveToken(request);
+        Authentication authentication = jwtToken.getAuthentication(accessToken);
+        Member member = (Member) authentication.getPrincipal();
+        tokenService.deleteToken(member);
+        SecurityContextHolder.clearContext();
     }
 }
