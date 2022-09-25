@@ -55,6 +55,8 @@ axios.get(`/api/members/${getEmail.value}`, configs)
     })
     .catch(e => {
       alert(e.response.data)
+      auth.clear();
+      router.replace({name: 'home'})
     })
 })
 const edit = function () {
