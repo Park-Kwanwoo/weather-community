@@ -33,7 +33,6 @@ const router = useRouter();
 const write = function () {
 
   if (getIsAuth.value) {
-    console.log(getIsAuth.value);
     router.push({name: 'write'})
   } else {
     router.replace({name: 'login'})
@@ -43,7 +42,6 @@ const write = function () {
 const posts = function () {
 
   if (getIsAuth.value) {
-    console.log(getIsAuth.value);
     router.push({name: 'posts'})
   } else {
     router.replace({name: 'login'})

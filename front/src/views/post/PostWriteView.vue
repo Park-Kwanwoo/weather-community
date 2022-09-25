@@ -35,7 +35,7 @@ const write = function () {
     title: title.value,
     content: content.value,
   },  configs)
-      .then(() => {
+      .then(r => {
         router.replace({name: "posts"})
       })
       .catch(e => {

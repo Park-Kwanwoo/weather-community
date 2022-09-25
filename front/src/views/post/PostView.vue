@@ -1,15 +1,18 @@
 <template>
   <div class="container">
     <div class="title">
-      <h2>{{ post.title }}</h2>
+      <h1>제목</h1>
+      <el-input v-model="post.title" readonly></el-input>
     </div>
     <div class="content">
-      {{ post.content }}
+      <h1>내용</h1>
+      <el-input type="textarea" v-model="post.content" resize="none" rows="30" readonly></el-input>
     </div>
-    <div>
-      <el-button type="primary" v-if="post.flag" @click="edit()">수정</el-button>
-      <el-button type="warning" v-if="post.flag" @click="remove()">삭제</el-button>
+    <div class="pt-4 justify-content-end">
+      <el-button type="primary" v-if="flag" @click="edit">수정</el-button>
+      <el-button type="warning" v-if="flag" @click="remove">삭제</el-button>
     </div>
+
   </div>
 </template>
 
@@ -31,13 +34,20 @@ const post = ref({
   id: 0,
   title: "",
   content: "",
-  memberId: 0,
-  flag: false
+  createdTime: "",
+  memberEmail: "",
 });
 
+const flag = ref(false);
 const router = useRouter();
 const auth = useAuthStore();
-const { getIsAuth } = storeToRefs(auth);
+const {getAccessToken} = storeToRefs(auth)
+const {getEmail} = storeToRefs(auth)
+const configs = {
+  headers: {
+    Authorization: getAccessToken.value
+  }
+}
 
 
 const edit = () => {
@@ -45,7 +55,7 @@ const edit = () => {
 }
 
 const remove = () => {
-  axios.delete(`/api/posts/${props.postId}`)
+  axios.delete(`/api/posts/${props.postId}`, configs)
       .then((r) => {
         router.replace({name: 'posts'})
       })
@@ -55,8 +65,13 @@ const remove = () => {
 }
 
 onMounted(() => {
-  axios.get(`/api/posts/${props.postId}`).then((response) => {
+  axios.get(`/api/posts/${props.postId}`, configs).then((response) => {
     post.value = response.data;
+    if (getEmail.value === post.value.memberEmail) {
+      flag.value = true
+    }
+  }).catch(e => {
+
   })
 })
 
