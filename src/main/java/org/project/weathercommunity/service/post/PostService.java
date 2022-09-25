@@ -11,7 +11,8 @@ import org.project.weathercommunity.repository.post.PostRepository;
 import org.project.weathercommunity.request.post.PostCreate;
 import org.project.weathercommunity.request.post.PostEdit;
 import org.project.weathercommunity.request.post.PostSearch;
-import org.project.weathercommunity.response.post.PostResponse;
+import org.project.weathercommunity.response.post.PostListResponse;
+import org.project.weathercommunity.response.post.PostOneResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,22 +45,23 @@ public class PostService {
 
     }
 
-    public PostResponse get(Long id) {
+    public PostOneResponse get(Long id) {
 
         Post post = postRepository.findById(id)
                 .orElseThrow(PostNotFoundException::new);
 
-        return PostResponse.builder()
+        return PostOneResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .memberId(post.getMember().getId())
+                .createdTime(post.getCreatedDate())
+                .memberEmail(post.getMember().getEmail())
                 .build();
     }
 
-    public List<PostResponse> getList(PostSearch postSearch) {
+    public List<PostListResponse> getList(PostSearch postSearch) {
         return postRepository.getList(postSearch).stream()
-                .map(PostResponse::new)
+                .map(PostListResponse::new)
                 .collect(Collectors.toList());
 
     }
@@ -84,5 +86,9 @@ public class PostService {
                 .orElseThrow(PostNotFoundException::new);
 
         postRepository.delete(post);
+    }
+
+    public long totalPage() {
+        return postRepository.count();
     }
 }
