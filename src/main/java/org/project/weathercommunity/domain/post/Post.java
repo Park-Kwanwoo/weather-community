@@ -9,7 +9,7 @@ import org.project.weathercommunity.domain.member.Member;
 
 import javax.persistence.*;
 
-import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
@@ -24,7 +24,7 @@ public class Post extends BaseTimeEntity {
     @Lob
     private String content;
 
-    @ManyToOne(targetEntity = Member.class, fetch = EAGER)
+    @ManyToOne(targetEntity = Member.class, fetch = LAZY)
     private Member member;
 
     @Builder
