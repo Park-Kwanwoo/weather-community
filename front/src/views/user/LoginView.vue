@@ -13,16 +13,13 @@
       <el-button type="primary" v-on:click.prevent="submitForm" class="btn-primary">로그인</el-button>
     </el-form-item>
   </el-form>
-  <a href="/oauth2/authorization/github">Github Login</a><br>
-  <a href="/oauth2/authorization/google">Google Login</a><br>
 </template>
 
 <script setup lang="ts">
 import axios from "axios";
-import {reactive, ref} from "vue";
+import {reactive} from "vue";
 import {useRouter} from "vue-router";
 import {useAuthStore} from "@/stores/auth";
-import {storeToRefs} from "pinia";
 
 const router = useRouter();
 const auth = useAuthStore();
