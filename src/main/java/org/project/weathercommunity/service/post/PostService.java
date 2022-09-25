@@ -45,6 +45,7 @@ public class PostService {
 
     }
 
+    @Transactional
     public PostOneResponse get(Long id) {
 
         Post post = postRepository.findById(id)
@@ -59,6 +60,7 @@ public class PostService {
                 .build();
     }
 
+    @Transactional
     public List<PostListResponse> getList(PostSearch postSearch) {
         return postRepository.getList(postSearch).stream()
                 .map(PostListResponse::new)
