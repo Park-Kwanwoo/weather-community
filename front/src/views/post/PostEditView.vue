@@ -17,6 +17,7 @@ import {ref} from "vue";
 import axios from "axios";
 import {useRouter} from "vue-router";
 import {useAuthStore} from "@/stores/auth";
+import {storeToRefs} from "pinia";
 
 const post = ref({
   id: 0,
@@ -26,27 +27,32 @@ const post = ref({
 
 const router = useRouter();
 const auth = useAuthStore();
+const {getAccessToken} = storeToRefs(auth)
+const configs = {
+  headers: {
+    Authorization: getAccessToken.value
+  }
+}
+
 
 const props = defineProps({
   postId: {
-    type:[Number, String],
+    type: [Number, String],
     require: true
   }
 })
 
-axios.get(`/api/posts/${props.postId}`).then((response) => {
+axios.get(`/api/posts/${props.postId}`, configs).then((response) => {
   post.value = response.data;
 })
 
 const edit = function () {
-  axios.patch(`/api/posts/${props.postId}`, post.value)
-      .then(() => {
+  axios.patch(`/api/posts/${props.postId}`, post.value, configs)
+      .then((r) => {
+        router.replace({name: 'posts'})
+      }).catch(e => {
         auth.clear();
         router.replace({name: "login"})
-      })
+  })
 };
 </script>
-
-<style scoped>
-
-</style>

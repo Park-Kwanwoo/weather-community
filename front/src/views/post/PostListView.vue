@@ -1,12 +1,33 @@
 <template>
   <div>
-    <ul>
-      <li v-for="post in posts" :key="post.id">
-        <div class="title">
-          <router-link :to="{name: 'post', params: { postId: post.id}}">{{ post.title }}</router-link>
-        </div>
-      </li>
-    </ul>
+    <h1>자유 게시판</h1>
+  </div>
+  <div class="el-form-item">
+    <el-table :data="posts" :height="440">
+      <el-table-column prop="id" width="100" label="번호"/>
+      <el-table-column prop="title" label="제목">
+        <template v-slot:default="table">
+          <router-link :to="{name: 'post', params: { postId: table.row.id }}" tag="span">
+            {{ table.row.title }}
+          </router-link>
+        </template>
+      </el-table-column>
+      <el-table-column prop="memberName" label="작성자" width="150px"/>
+      <el-table-column prop="createdTime" label="작성일" width="150px"/>
+    </el-table>
+  </div>
+  <div class="pagination" >
+    <el-pagination
+        style="justify-content: center"
+        small
+        background
+        layout="prev, pager, next"
+        :total="total()"
+        @next-click="pagination"
+        @prev-click="pagination"
+        @current-change="pagination"
+        class="mt-4"
+    />
   </div>
   <div>
     <el-button v-if="isAuth" type="primary" @click="write">글 작성</el-button>
@@ -22,54 +43,53 @@ import router from "@/router";
 
 const auth = useAuthStore();
 const posts = ref([])
+const totalPage = ref(0);
 const { isAuth } = storeToRefs(auth)
 const { getAccessToken } = storeToRefs(auth);
 
 const configs = {
   headers: {
-    Authorization: getAccessToken.value
+    Authorization: getAccessToken.value,
   }
 }
 
-axios.get("/api/posts?page=1&size=10", configs).then((response) => {
-  response.data.forEach((r: any) => {
-    posts.value.push(r);
-  }).catch((e: any) => {
-    console.log(e.response.data)
-  })
+axios.get("/api/post/totalPage", configs)
+    .then(r => {
+      totalPage.value = r.data;
+    }).catch(e => {
+      console.log(e.response.data)
 })
+
+
+axios.get(`/api/posts?page=1&size=10`, configs)
+    .then(res => {
+      res.data.forEach((r: any) => {
+        posts.value.push(r);
+      })
+    })
+    .catch(e => {
+      console.log(e.response.data)
+    })
 
 const write = function () {
   router.replace( {name: 'write'} )
 };
+
+const total = function () {
+  return totalPage.value > 10 ? totalPage.value : 10;
+};
+
+const pagination = (e: number) => {
+
+  axios.get(`/api/posts?page=${e}&size=10`, configs)
+      .then(res => {
+        posts.value.length = 0
+        res.data.forEach((r: any) => {
+          posts.value.push(r);
+        })
+      })
+      .catch(e => {
+        console.log(e.response.data)
+      })
+}
 </script>
-
-
-<style scoped>
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-li {
-  margin-bottom: 1.3rem;
-}
-
-li .title {
-  font-size: 1.2rem;
-  color: #303030;
-}
-
-li .title > a {
-  text-decoration: none;
-}
-
-li .content {
-  font-size: 0.95rem;
-  color: #5d5d5d;
-}
-
-li:last-child {
-  margin-bottom: 0;
-}
-</style>
