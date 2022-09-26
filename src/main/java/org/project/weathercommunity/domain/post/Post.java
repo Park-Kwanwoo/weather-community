@@ -5,9 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.project.weathercommunity.domain.base.BaseTimeEntity;
+import org.project.weathercommunity.domain.comment.Comment;
 import org.project.weathercommunity.domain.member.Member;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -26,6 +30,10 @@ public class Post extends BaseTimeEntity {
 
     @ManyToOne(targetEntity = Member.class, fetch = LAZY)
     private Member member;
+
+
+    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Post(String title, String content, Member member) {
