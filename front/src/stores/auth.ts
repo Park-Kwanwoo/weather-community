@@ -5,7 +5,7 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         isAuth: false,
         accessToken: '',
-        email: ''
+        id: 0
     }),
     getters: {
         getIsAuth(state) {
@@ -14,8 +14,8 @@ export const useAuthStore = defineStore('auth', {
         getAccessToken(state) {
             return state.accessToken;
         },
-        getEmail(state) {
-            return state.email;
+        getId(state) {
+            return state.id;
         }
     },
     actions: {
@@ -25,13 +25,13 @@ export const useAuthStore = defineStore('auth', {
         setAuth(boolean: boolean) {
             this.isAuth = boolean;
         },
-        setEmail(email: any) {
-            this.email = email;
+        setId(id: any) {
+            this.id = id;
         },
         clear() {
             this.isAuth = false;
             this.accessToken = '';
-            this.email = '';
+            this.id = 0;
         }
     },
     persist: true
