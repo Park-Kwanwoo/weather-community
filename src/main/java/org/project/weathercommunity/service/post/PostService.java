@@ -56,7 +56,7 @@ public class PostService {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createdTime(post.getCreatedDate())
-                .memberEmail(post.getMember().getEmail())
+                .memberId(post.getMember().getId())
                 .build();
     }
 

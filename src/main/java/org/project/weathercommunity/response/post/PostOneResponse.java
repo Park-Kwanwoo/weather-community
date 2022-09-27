@@ -11,22 +11,22 @@ public class PostOneResponse {
     private final String title;
     private final String content;
     private final String createdTime;
-    private final String memberEmail;
+    private final Long memberId;
 
     public PostOneResponse(Post post) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.createdTime = post.getCreatedDate().substring(5, 16);
-        this.memberEmail = post.getMember().getEmail();
+        this.memberId = post.getMember().getId();
     }
 
     @Builder
-    public PostOneResponse(Long id, String title, String content, String createdTime, String memberEmail) {
+    public PostOneResponse(Long id, String title, String content, String createdTime, Long memberId) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createdTime = createdTime;
-        this.memberEmail = memberEmail;
+        this.memberId = memberId;
     }
 }
