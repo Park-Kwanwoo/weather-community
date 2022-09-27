@@ -10,6 +10,14 @@
       <el-icon><document /></el-icon>
       <el-link @click="posts">글 목록</el-link>
     </el-menu-item>
+    <el-sub-menu v-if="getIsAuth" index="3">
+      <template #title>
+        <el-icon><Setting /></el-icon>
+        <span>회원 정보</span>
+      </template>
+        <el-menu-item index="1-1" @click="personalInfoEdit">개인정보 수정</el-menu-item>
+        <el-menu-item index="1-2" @click="passwordEdit">비밀번호 수정</el-menu-item>
+    </el-sub-menu>
   </el-menu>
 </template>
 
@@ -28,6 +36,7 @@ import axios from "axios";
 
 const auth = useAuthStore();
 const { getIsAuth } = storeToRefs(auth)
+const { getId } = storeToRefs(auth)
 const router = useRouter();
 
 const write = function () {
@@ -48,6 +57,15 @@ const posts = function () {
   }
 };
 
+const personalInfoEdit = () => {
+  router.replace( {name: 'myPage', params:{memberId: getId.value}})
+}
+
+const passwordEdit = () => {
+  router.replace( {name: 'myPage'})
+}
+
+
 </script>
 
 <style>
@@ -55,4 +73,5 @@ const posts = function () {
   width: 200px;
   min-height: 400px;
 }
+
 </style>
