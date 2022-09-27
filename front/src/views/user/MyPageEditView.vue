@@ -1,5 +1,4 @@
 <template>
-
   <div>
     <h3 class="text-gray-900 font-weight-bold">마이페이지</h3>
     <br/>
@@ -18,8 +17,8 @@
         <el-input v-model="userInfo.phone" readonly />
       </el-form-item>
       <el-form-item label="">
-        <el-button type="primary" @click="edit()">수정</el-button>
-        <el-button type="warning" @click="remove()">삭제</el-button>
+        <el-button type="primary" @click="edit">수정</el-button>
+        <el-button type="warning" @click="remove">삭제</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -35,7 +34,13 @@ import router from "@/router";
 
 const auth = useAuthStore();
 const { getAccessToken } = storeToRefs(auth);
-const { getEmail } = storeToRefs(auth);
+
+const props = defineProps({
+  memberId: {
+    type: Number,
+    require: true
+  }
+})
 
 const userInfo = ref({
   id: 0,
@@ -51,7 +56,7 @@ const configs = {
   }
 }
 
-axios.get(`/api/members/${getEmail.value}`, configs)
+axios.get(`/api/members/${props.memberId}`, configs)
     .then(r => {
       userInfo.value = r.data
     })
@@ -61,13 +66,13 @@ axios.get(`/api/members/${getEmail.value}`, configs)
     })
 
 const edit = function () {
-  axios.patch(`/api/members/${getEmail.value}`, {
+  axios.patch(`/api/members/${props.memberId}`, {
     password: userInfo.value.password,
     name: userInfo.value.name,
     phone: userInfo.value.phone,
   }, configs)
       .then(r => {
-        router.replace({name: 'myPage'})
+        router.push({name: 'myPage', params: {memberId: props.memberId}})
       })
       .catch(e => {
         alert(e.response.data.validation.name)
@@ -76,7 +81,7 @@ const edit = function () {
 
 
 const remove = () => {
-  axios.delete(`/api/members/${getEmail.value}`, configs)
+  axios.delete(`/api/members/${props.memberId}`, configs)
       .then(r => {
         auth.clear();
         router.replace({name: 'home'})

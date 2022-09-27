@@ -32,8 +32,14 @@ import {useRouter} from "vue-router";
 
 const auth = useAuthStore();
 const router = useRouter();
-const { getEmail } = storeToRefs(auth);
 const { getAccessToken } = storeToRefs(auth)
+
+const props = defineProps({
+  memberId: {
+    type: Number,
+    require: true
+  }
+})
 
 const configs = {
   headers: {
@@ -49,7 +55,7 @@ const userInfo = ref({
 })
 
 onMounted(() => {
-axios.get(`/api/members/${getEmail.value}`, configs)
+axios.get(`/api/members/${props.memberId}`, configs)
     .then(r => {
       userInfo.value = r.data
     })
@@ -60,7 +66,7 @@ axios.get(`/api/members/${getEmail.value}`, configs)
     })
 })
 const edit = function () {
-  router.push({name: 'myPageEdit'})
+  router.push({name: 'myPageEdit', params: {memberId: props.memberId}})
 };
 
 </script>

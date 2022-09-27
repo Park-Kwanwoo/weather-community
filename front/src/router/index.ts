@@ -8,6 +8,7 @@ import LoginView from '@/views/user/LoginView.vue'
 import JoinView from '@/views/user/JoinView.vue'
 import MyPageView from '@/views/user/MyPageView.vue'
 import MyPageEditView from '@/views/user/MyPageEditView.vue'
+import PasswordEditView from '@/views/user/PasswordEditView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,15 +53,21 @@ const router = createRouter({
       props: true
     },
     {
-      path: '/myPage',
+      path: '/myPage/:memberId',
       name: 'myPage',
       component: MyPageView,
       props: true
     },
     {
-      path: '/myPageEdit',
+      path: '/myPageEdit/:memberId',
       name: 'myPageEdit',
       component: MyPageEditView,
+      props: true
+    },
+    {
+      path: '/passwordEdit',
+      name: 'passwordEdit',
+      component: PasswordEditView,
       props: true
     }
   ]
