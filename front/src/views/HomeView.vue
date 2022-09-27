@@ -2,7 +2,7 @@
   <div>
     <h1>오늘의 날씨</h1>
     <div>
-거      <el-table :data="weatherData" height="280px" style="width: 50%">
+      <el-table :data="weatherData" height="280px" style="width: 50%">
         <el-table-column prop="fcstTime" label="시간"/>
         <el-table-column prop="t1h" label="기온"/>
         <el-table-column prop="reh" label="습도"/>

@@ -41,7 +41,7 @@ public class VueAuthenticationSuccessHandler implements AuthenticationSuccessHan
         String refreshToken = jwtToken.createRefreshToken(member.getEmail());
 
         MemberLoginResponse memberLoginResponse = MemberLoginResponse.builder()
-                .email(member.getEmail())
+                .id(member.getId())
                 .token(accessToken)
                 .build();
 
