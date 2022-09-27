@@ -40,7 +40,7 @@ const submitForm = () => {
       .then((r) => {
         auth.setAuth(true)
         auth.setAccessToken(r.data.token);
-        auth.setEmail(r.data.email);
+        auth.setId(r.data.id);
         router.replace({name: 'home'});
       })
       .catch(e => {

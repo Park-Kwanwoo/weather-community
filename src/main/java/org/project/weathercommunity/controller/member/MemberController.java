@@ -29,19 +29,19 @@ public class MemberController {
         }
 
     }
-    @GetMapping("/members/{memberEmail}")
-    public MemberMypageResponse get(@PathVariable("memberEmail") String email) {
-        return memberService.get(email);
+    @GetMapping("/members/{memberId}")
+    public MemberMypageResponse get(@PathVariable("memberId") Long id) {
+        return memberService.get(id);
     }
 
-    @PatchMapping("/members/{memberEmail}")
-    public void edit(@PathVariable("memberEmail") String email, @RequestBody @Valid MemberEdit memberEdit) {
-        memberService.edit(email, memberEdit);
+    @PatchMapping("/members/{memberId}")
+    public void edit(@PathVariable("memberId") Long id, @RequestBody @Valid MemberEdit memberEdit) {
+        memberService.edit(id, memberEdit);
     }
 
-    @DeleteMapping("/members/{memberEmail}")
-    public void delete(@PathVariable("memberEmail") String email) {
-        memberService.delete(email);
+    @DeleteMapping("/members/{memberId}")
+    public void delete(@PathVariable("memberId") Long id) {
+        memberService.delete(id);
     }
 
     @GetMapping("/members/logout")
