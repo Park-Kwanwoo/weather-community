@@ -8,9 +8,7 @@
   <div class="mt-2">
     <h3>비밀번호</h3>
     <p id="password"> {{ errorResponse.password }} </p>
-    <el-input v-model="password" type="password" rows="15" placeholder="숫자, 문자, 특수문자 포함 8~15자리 이내로 입력해주세요.
-
-"></el-input>
+    <el-input v-model="password" type="password" rows="15" placeholder="숫자, 문자, 특수문자 포함 8~15자리 이내로 입력해주세요."/>
   </div>
 
 
@@ -64,16 +62,15 @@ const join = function () {
     password: password.value,
     name: name.value,
     phone: phone.value
-
   })
-      .then((res) => {
-        if (res.status == 200) {
+      .then((r) => {
+        if (r.status == 200) {
           router.replace({name: "home"});
         }
       })
-      .catch((error) => {
+      .catch((e) => {
         errorResponse.value = {email: '', name: '', phone: '', password: ''};
-        errorResponse.value = error.response.data.validation;
+        errorResponse.value = e.response.data.validation;
       })
 }
 </script>
