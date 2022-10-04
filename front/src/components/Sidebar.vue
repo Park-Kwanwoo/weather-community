@@ -25,14 +25,11 @@
 import {
   Document,
   Menu as IconMenu,
-  Location,
   Setting,
 } from '@element-plus/icons-vue'
 import {useAuthStore} from "@/stores/auth";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
-import axios from "axios";
-
 
 const auth = useAuthStore();
 const { getIsAuth } = storeToRefs(auth)
@@ -62,7 +59,7 @@ const personalInfoEdit = () => {
 }
 
 const passwordEdit = () => {
-  router.replace( {name: 'myPage'})
+  router.replace( {name: 'password', params:{memberId: getId.value}})
 }
 
 
