@@ -61,7 +61,7 @@ class MemberServiceTest {
         );
         assertEquals("테스터", member.getName());
         assertEquals("010-1234-5678", member.getPhone());
-        assertEquals(Role.ROLE_USER, member.getRole());
+        assertEquals(Role.USER, member.getRole());
     }
 
 
