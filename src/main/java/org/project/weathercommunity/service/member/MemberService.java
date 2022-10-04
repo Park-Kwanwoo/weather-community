@@ -2,7 +2,7 @@ package org.project.weathercommunity.service.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.project.weathercommunity.config.security.token.JwtToken;
+import org.project.weathercommunity.config.security.token.JwtTokenProvider;
 import org.project.weathercommunity.domain.member.Member;
 import org.project.weathercommunity.domain.member.MemberEditor;
 import org.project.weathercommunity.exception.MemberNotFoundException;
@@ -27,7 +27,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
-    private final JwtToken jwtToken;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public void join(MemberCreate memberCreate) {
@@ -91,8 +91,8 @@ public class MemberService {
     public void logout(HttpServletRequest request) {
 
         log.info("로그아웃..");
-        String accessToken = jwtToken.resolveToken(request);
-        Authentication authentication = jwtToken.getAuthentication(accessToken);
+        String accessToken = jwtTokenProvider.resolveToken(request);
+        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
         Member member = (Member) authentication.getPrincipal();
         tokenService.deleteToken(member);
         SecurityContextHolder.clearContext();
