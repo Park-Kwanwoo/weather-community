@@ -3,8 +3,8 @@ package org.project.weathercommunity.domain.member;
 
 public enum Role {
 
-    ROLE_USER("USER"),
-    ROLE_ADMIN("ADMIN");
+    USER("USER"),
+    ADMIN("ADMIN");
 
     Role(String role) {
     }
