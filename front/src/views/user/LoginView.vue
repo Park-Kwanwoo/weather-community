@@ -20,6 +20,7 @@ import axios from "axios";
 import {reactive} from "vue";
 import {useRouter} from "vue-router";
 import {useAuthStore} from "@/stores/auth";
+import {ElMessage} from "element-plus";
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -45,8 +46,7 @@ const submitForm = () => {
       })
       .catch(e => {
         console.log(e.response.data.message)
-        router.replace("/login?error=" + e.response.data.message)
-        alert(e.response.data.message)
+        ElMessage(e.response.data.message)
       })
 }
 </script>
