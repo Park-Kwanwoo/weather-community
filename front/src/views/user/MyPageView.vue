@@ -29,6 +29,7 @@ import {defineProps, onMounted, ref} from "vue";
 import {useAuthStore} from "@/stores/auth";
 import {storeToRefs} from "pinia";
 import {useRouter} from "vue-router";
+import {ElMessage} from "element-plus";
 
 const auth = useAuthStore();
 const router = useRouter();
@@ -60,7 +61,7 @@ axios.get(`/api/members/${props.memberId}`, configs)
       userInfo.value = r.data
     })
     .catch(e => {
-      alert(e.response.data)
+      ElMessage(e.response.data)
       auth.clear();
       router.replace({name: 'home'})
     })

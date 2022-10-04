@@ -26,11 +26,11 @@
 
 <script setup lang="ts">
 import axios from "axios";
-import {defineProps, onMounted, ref} from "vue";
+import {defineProps, ref} from "vue";
 import {useAuthStore} from "@/stores/auth";
 import {storeToRefs} from "pinia";
-import {useRouter} from "vue-router";
 import router from "@/router";
+import {ElMessage} from "element-plus";
 
 const auth = useAuthStore();
 const { getAccessToken } = storeToRefs(auth);
@@ -75,7 +75,7 @@ const edit = function () {
         router.push({name: 'myPage', params: {memberId: props.memberId}})
       })
       .catch(e => {
-        alert(e.response.data.validation.name)
+        ElMessage(e.response.data.validation.name)
       })
 };
 
@@ -87,7 +87,7 @@ const remove = () => {
         router.replace({name: 'home'})
       })
       .catch(e => {
-        alert(e.response.data)
+        ElMessage(e.response.data)
         auth.clear();
         router.push({name: 'home'})
       })
