@@ -14,10 +14,10 @@ import java.util.Date;
 
 @Slf4j
 @Component
-public class JwtToken {
+public class JwtTokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
-
+    private static final String BEARER = "Bearer ";
     private final long ACCESS_TOKEN_EXPIRE_TIME;
     private final long REFRESH_TOKEN_EXPIRE_TIME;
 
@@ -25,10 +25,10 @@ public class JwtToken {
 
     private final String key;
 
-    public JwtToken(@Value("${jwt.secret}") String secretKey,
-                    @Value("${jwt.access-token-expire-time}") long accessTime,
-                    @Value("${jwt.refresh-token-expire-time}") long refreshTime,
-                    UserDetailsService userDetailsService) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey,
+                            @Value("${jwt.access-token-expire-time}") long accessTime,
+                            @Value("${jwt.refresh-token-expire-time}") long refreshTime,
+                            UserDetailsService userDetailsService) {
         this.ACCESS_TOKEN_EXPIRE_TIME = accessTime;
         this.REFRESH_TOKEN_EXPIRE_TIME = refreshTime;
         this.userDetailsService = userDetailsService;
@@ -57,11 +57,11 @@ public class JwtToken {
         Claims claims = Jwts.claims()
                 .setSubject(email);
 
-        claims.put(AUTHORITIES_KEY, Role.ROLE_USER);
+        claims.put(AUTHORITIES_KEY, Role.USER);
 
         Date now = new Date();
 
-        return Jwts.builder()
+        return BEARER + Jwts.builder()
                 .setClaims(claims)    // 토큰 발행 유저 정보
                 .setIssuedAt(now)     // 토큰 발행 시간
                 .setExpiration(new Date(now.getTime() + tokenValid))  // 토큰 만료시간
@@ -97,14 +97,19 @@ public class JwtToken {
     public boolean validTokenExpired(String token) {
 
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
             return true;
-        } catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException | SignatureException | MalformedJwtException | UnsupportedJwtException |
+                 IllegalArgumentException e) {
             return false;
         }
     }
 
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("Authorization");
+        String token = request.getHeader("Authorization");
+        if (token != null && token.startsWith(BEARER)) {
+            return token.substring(7);
+        }
+        return null;
     }
 }
