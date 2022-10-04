@@ -40,6 +40,7 @@ import {ref} from "vue";
 import {useAuthStore} from "@/stores/auth";
 import {storeToRefs} from "pinia";
 import router from "@/router";
+import {ElMessage} from "element-plus";
 
 const auth = useAuthStore();
 const posts = ref([])
@@ -57,7 +58,7 @@ axios.get("/api/post/totalPage", configs)
     .then(r => {
       totalPage.value = r.data;
     }).catch(e => {
-      console.log(e.response.data)
+      ElMessage(e.response.data)
 })
 
 
@@ -68,7 +69,9 @@ axios.get(`/api/posts?page=1&size=10`, configs)
       })
     })
     .catch(e => {
-      console.log(e.response.data)
+      ElMessage(e.response.data)
+      auth.clear();
+      router.push({name: 'login'})
     })
 
 const write = function () {
@@ -89,7 +92,9 @@ const pagination = (e: number) => {
         })
       })
       .catch(e => {
-        console.log(e.response.data)
+        ElMessage(e.response.data)
+        auth.clear();
+        router.push({name: 'login'})
       })
 }
 </script>
