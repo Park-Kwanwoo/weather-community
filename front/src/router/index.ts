@@ -65,8 +65,8 @@ const router = createRouter({
       props: true
     },
     {
-      path: '/passwordEdit',
-      name: 'passwordEdit',
+      path: '/passwordEdit/:memberId',
+      name: 'password',
       component: PasswordEditView,
       props: true
     }
