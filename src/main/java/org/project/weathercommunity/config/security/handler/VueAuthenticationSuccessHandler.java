@@ -3,7 +3,7 @@ package org.project.weathercommunity.config.security.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.project.weathercommunity.config.security.token.JwtToken;
+import org.project.weathercommunity.config.security.token.JwtTokenProvider;
 import org.project.weathercommunity.domain.member.Member;
 import org.project.weathercommunity.request.token.TokenRequest;
 import org.project.weathercommunity.response.member.MemberLoginResponse;
@@ -27,7 +27,7 @@ public class VueAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private final JwtToken jwtToken;
+    private final JwtTokenProvider jwtTokenProvider;
     private final TokenService tokenService;
 
     @Override
@@ -37,8 +37,8 @@ public class VueAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
         Member member = (Member) authentication.getPrincipal();
 
-        String accessToken = jwtToken.createAccessToken(member.getEmail());
-        String refreshToken = jwtToken.createRefreshToken(member.getEmail());
+        String accessToken = jwtTokenProvider.createAccessToken(member.getEmail());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail());
 
         MemberLoginResponse memberLoginResponse = MemberLoginResponse.builder()
                 .id(member.getId())
@@ -50,9 +50,7 @@ public class VueAuthenticationSuccessHandler implements AuthenticationSuccessHan
                 .refreshToken(refreshToken)
                 .build();
 
-        log.info("accessToken = {}", accessToken);
         tokenService.saveToken(tokenRequest, member);
-
 
         response.setCharacterEncoding("utf-8");
         response.setStatus(HttpStatus.OK.value());
