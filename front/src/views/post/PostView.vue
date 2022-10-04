@@ -1,64 +1,64 @@
 <template>
   <div class="container">
-    <div class="title">
-      <h1>제목</h1>
-      <el-input v-model="post.title" readonly></el-input>
-    </div>
-    <div class="content">
-      <h1>내용</h1>
-      <el-input type="textarea" v-model="post.content" resize="none" rows="25" readonly></el-input>
-    </div>
-    <div class="pt-4 float-end">
-      <el-button type="primary" v-if="flag" @click="edit">수정</el-button>
-      <el-button type="warning" v-if="flag" @click="remove">삭제</el-button>
-    </div>
-  </div>
-
-  <div class="comments mt-5">
-    <h2>댓글</h2>
-    <div class="comment">
-      <div class="comment-write">
-        <el-input type="textarea" resize="none" v-model="comment.content" rows="3"></el-input>
+    <div class="post">
+      <div class="title">
+        <h1>제목</h1>
+        <el-input v-model="post.title" readonly></el-input>
       </div>
-      <div class="comment-request mt-2">
-        <el-button class="float-end" type="info" size="small" @click="writeComment">등록</el-button>
+      <div class="content">
+        <h1>내용</h1>
+        <el-input type="textarea" v-model="post.content" resize="none" rows="25" readonly></el-input>
+      </div>
+      <div class="pt-4 float-end">
+        <el-button type="primary" v-if="postFlag" @click="editPost">수정</el-button>
+        <el-button type="warning" v-if="postFlag" @click="removePost">삭제</el-button>
       </div>
     </div>
-    <div class="comment-view">
-      <el-table :data="comments">
-
-        <el-input type="hidden" prop="id"/>
-        <el-table-column prop="content" label="댓글"/>
-        <el-table-column prop="nickname" label="작성자"/>
-        <el-table-column prop="createTime" label="작성일"/>
-        <el-table-column label="답글">
-          <template v-slot:default="table">
-            <el-button type="plain" :icon="Message" :id="table.row.id" link @click="add"></el-button>
-          </template>
-        </el-table-column>
-        <el-table-column
-            inline-template
-            label="-">
-          <template v-slot:default="table">
-            <el-button type="info" :icon="Delete" link @click="deleteComment(table.row.id)"></el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+    <div class="toList float-end">
+      <br>
+      <el-button type="info" link ><router-link :to="{name: 'posts'}">목록</router-link></el-button>
     </div>
+
+    <div class="comments mt-5">
+      <h2>댓글 작성</h2>
+      <div class="comment">
+        <div class="comment-write">
+          <el-input type="textarea" resize="none" v-model="comment.content" rows="3"></el-input>
+        </div>
+        <div class="comment-request mt-2">
+          <el-button class="float-end" type="info" size="small" @click="writeComment">등록</el-button>
+        </div>
+      </div>
+
+      <h2>댓글</h2>
+      <div class="comment-view">
+        <div v-for="comment in comments" :key="comment.id" :id="comment.id">
+          <el-row>
+            <el-col :span="4"> {{ comment.nickname }}</el-col>
+            <el-col :span="16"> {{ comment.content }}</el-col>
+            <el-col :span="3"> {{ comment.createTime }}</el-col>
+            <el-button :span="1" type="info" link :icon="Delete"
+                       @click="deleteComment(comment.id, comment.memberId)"></el-button>
+            <el-divider/>
+          </el-row>
+        </div>
+        <div id="app2">
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  Delete,
-  Message,
-} from '@element-plus/icons-vue'
+import {Delete} from '@element-plus/icons-vue'
 
-import {defineProps, onMounted, ref} from "vue";
+import {defineProps, h, onMounted, ref} from "vue";
 import axios from "axios";
 import {useRouter} from "vue-router";
 import {useAuthStore} from "@/stores/auth";
 import {storeToRefs} from "pinia";
+import {ElMessage} from 'element-plus'
 
 const props = defineProps({
   postId: {
@@ -80,11 +80,9 @@ const comment = ref({
   postId: props.postId
 })
 
-
 const comments = ref([]);
-const reply = ref("");
 
-const flag = ref(false);
+const postFlag = ref(false);
 const router = useRouter();
 const auth = useAuthStore();
 const {getAccessToken} = storeToRefs(auth)
@@ -104,27 +102,25 @@ const getComments = function () {
   })
 };
 
-const edit = () => {
+const editPost = () => {
   router.push({name: "edit", params: {postId: props.postId}});
 }
 
-const remove = () => {
+const removePost = () => {
   axios.delete(`/api/posts/${props.postId}`, configs)
       .then((r) => {
         router.replace({name: 'posts'})
       })
       .catch((e) => {
-        console.log(e.response.data);
+        ElMessage(e.response.data);
       });
 }
 
 onMounted(() => {
   axios.get(`/api/posts/${props.postId}`, configs).then((response) => {
     post.value = response.data;
-    console.log(getId.value)
-    console.log(post.value)
     if (getId.value === post.value.memberId) {
-      flag.value = true
+      postFlag.value = true
     }
   }).catch(e => {
     auth.clear();
@@ -139,22 +135,40 @@ const writeComment = function () {
         comment.value.content = "";
         getComments();
       }).catch(e => {
-    alert(e.response.data.validation.content);
+    ElMessage(e.response.data.validation.content);
   })
 };
 
-const deleteComment = function (e: any) {
-  axios.delete(`/api/comments/${e}`, configs)
-      .then(r => {
-        getComments();
-      }).catch(e => {
-    alert(e.response.data)
-  })
-};
+const deleteComment = function (commentId: Number, memberId: Number) {
+  if (auth.getId === memberId) {
+    axios.delete(`/api/comments/${commentId}`, configs)
+        .then(r => {
+          getComments();
+        }).catch(e => {
+      ElMessage(e.response.data)
+    });
+  } else {
+    ElMessage('삭제 권한이 없습니다!')
+  }
 
-const add = function (event: any) {
-  const replyTextArea = document.createElement('el-element');
-  // const click = document.getElementById(e.get.id);
-  alert(event.id)
 };
 </script>
+<style lang="scss" scoped>
+
+.el-row {
+  margin-bottom: 20px;
+}
+
+.el-row:last-child {
+  margin-bottom: 0;
+}
+
+.el-col {
+  border-radius: 4px;
+}
+
+.grid-content {
+  border-radius: 4px;
+  min-height: 36px;
+}
+</style>
