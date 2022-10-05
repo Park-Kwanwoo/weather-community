@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.exception.MemberDuplicateException;
 import org.project.weathercommunity.request.member.MemberCreate;
 import org.project.weathercommunity.request.member.MemberEdit;
+import org.project.weathercommunity.request.member.PasswordEdit;
 import org.project.weathercommunity.response.member.MemberMypageResponse;
 import org.project.weathercommunity.service.member.MemberService;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ public class MemberController {
         }
 
     }
+
     @GetMapping("/members/{memberId}")
     public MemberMypageResponse get(@PathVariable("memberId") Long id) {
         return memberService.get(id);
@@ -47,5 +49,10 @@ public class MemberController {
     @GetMapping("/members/logout")
     public void logout(HttpServletRequest request) {
         memberService.logout(request);
+    }
+
+    @PatchMapping("/members/password/{memberId}")
+    public void passwordEdit(@PathVariable("memberId") Long id, @RequestBody @Valid PasswordEdit passwordEdit) {
+        memberService.passwordEdit(id, passwordEdit);
     }
 }

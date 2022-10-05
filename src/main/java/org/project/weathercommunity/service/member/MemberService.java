@@ -5,12 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.config.security.token.JwtTokenProvider;
 import org.project.weathercommunity.domain.member.Member;
 import org.project.weathercommunity.domain.member.MemberEditor;
+import org.project.weathercommunity.domain.member.PasswordEditor;
 import org.project.weathercommunity.exception.MemberNotFoundException;
+import org.project.weathercommunity.exception.PasswordNotMatchException;
 import org.project.weathercommunity.repository.member.MemberRepository;
 import org.project.weathercommunity.request.member.MemberCreate;
 import org.project.weathercommunity.request.member.MemberEdit;
+import org.project.weathercommunity.request.member.PasswordEdit;
 import org.project.weathercommunity.response.member.MemberMypageResponse;
 import org.project.weathercommunity.service.token.TokenService;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -90,11 +94,30 @@ public class MemberService {
 
     public void logout(HttpServletRequest request) {
 
-        log.info("로그아웃..");
         String accessToken = jwtTokenProvider.resolveToken(request);
         Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
         Member member = (Member) authentication.getPrincipal();
         tokenService.deleteToken(member);
         SecurityContextHolder.clearContext();
+    }
+
+    @Transactional
+    public void passwordEdit(Long id, PasswordEdit passwordEdit) {
+
+        Member member = memberRepository.findById(id)
+                .orElseThrow(MemberNotFoundException::new);
+
+        if (passwordEncoder.matches(passwordEdit.getOldPassword(), member.getPassword())) {
+            PasswordEditor.PasswordEditorBuilder editorBuilder = member.toPasswordEditor();
+
+            PasswordEditor passwordEditor = editorBuilder
+                    .password(passwordEncoder.encode(passwordEdit.getNewPassword()))
+                    .build();
+
+            member.passwordEdit(passwordEditor);
+
+        } else {
+            throw new PasswordNotMatchException("password", "비밀번호가 일치하지 않습니다.");
+        }
     }
 }

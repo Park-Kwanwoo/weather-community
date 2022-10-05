@@ -50,7 +50,7 @@ public class Member extends BaseTimeEntity {
         this.password = password;
         this.name = name;
         this.phone = phone;
-        this.role = Role.USER;
+        this.role = Role.ROLE_USER;
     }
 
     public MemberEditor.MemberEditorBuilder toEditor() {
@@ -66,4 +66,11 @@ public class Member extends BaseTimeEntity {
         this.password = memberEditor.getPassword();
     }
 
+    public PasswordEditor.PasswordEditorBuilder toPasswordEditor() {
+        return PasswordEditor.builder()
+                .password(password);
+    }
+    public void passwordEdit(PasswordEditor passwordEditor) {
+        this.password = passwordEditor.getPassword();
+    }
 }
