@@ -6,6 +6,7 @@ import org.project.weathercommunity.config.security.filter.JwtAuthenticationFilt
 import org.project.weathercommunity.config.security.filter.VueLoginProcessingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -56,8 +57,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         .and()
                 .authorizeRequests()
-                .antMatchers("/members/join", "/members/login", "/weather/**").permitAll()
-                .antMatchers("/posts/create").hasRole("USER")
+                .antMatchers("/members/join", "/members/login", "/weather/forecast").permitAll()
+                .antMatchers(HttpMethod.GET, "/posts/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/comments").permitAll()
+                .antMatchers("/posts/create", "/comments/create").hasRole("USER")
                 .antMatchers("/members/**").hasRole("USER")
                 .anyRequest().authenticated()
         .and()
