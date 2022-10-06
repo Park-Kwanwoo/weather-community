@@ -37,6 +37,6 @@ public class MemberCreate {
         this.password = password;
         this.name = name;
         this.phone = phone;
-        this.role = Role.USER;
+        this.role = Role.ROLE_USER;
     }
 }

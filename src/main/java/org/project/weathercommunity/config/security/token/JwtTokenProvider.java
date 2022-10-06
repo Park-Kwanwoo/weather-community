@@ -57,7 +57,7 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims()
                 .setSubject(email);
 
-        claims.put(AUTHORITIES_KEY, Role.USER);
+        claims.put(AUTHORITIES_KEY, Role.ROLE_USER);
 
         Date now = new Date();
 
