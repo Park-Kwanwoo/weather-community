@@ -73,8 +73,12 @@ const edit = function () {
           if (e.response.data.validation.token) {
             auth.clear();
             router.push({name: 'home'})
-          } else{
+          } else if (e.response.data.validation.password){
             ElMessage(e.response.data.validation.password)
+          } else if (e.response.data.validation.oldPassword) {
+            ElMessage(e.response.data.validation.oldPassword)
+          } else if (e.response.data.validation.newPassword) {
+            ElMessage(e.response.data.validation.newPassword)
           }
         })
   }
