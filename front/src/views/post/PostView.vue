@@ -14,9 +14,9 @@
         <el-button type="warning" v-if="postFlag" @click="removePost">삭제</el-button>
       </div>
     </div>
-    <div class="toList float-end">
+    <div>
       <br>
-      <el-button type="info" link ><router-link :to="{name: 'posts'}">목록</router-link></el-button>
+      <el-button type="info" link><router-link :to="{name: 'posts'}">목록</router-link></el-button>
     </div>
 
     <div class="comments mt-5">
@@ -94,7 +94,7 @@ const configs = {
 }
 
 const getComments = function () {
-  axios.get(`/api/comments`, configs).then((response) => {
+  axios.get(`/api/comments?postId=${props.postId}`).then((response) => {
     comments.value.length = 0;
     response.data.forEach((r: any) => {
       comments.value.push(r);
@@ -117,7 +117,7 @@ const removePost = () => {
 }
 
 onMounted(() => {
-  axios.get(`/api/posts/${props.postId}`, configs).then((response) => {
+  axios.get(`/api/posts/${props.postId}`).then((response) => {
     post.value = response.data;
     if (getId.value === post.value.memberId) {
       postFlag.value = true
@@ -130,13 +130,18 @@ onMounted(() => {
 })
 
 const writeComment = function () {
-  axios.post('/api/comments/create', comment.value, configs)
-      .then(r => {
-        comment.value.content = "";
-        getComments();
-      }).catch(e => {
-    ElMessage(e.response.data.validation.content);
-  })
+
+  if (auth.getIsAuth) {
+    axios.post('/api/comments/create', comment.value, configs)
+        .then(r => {
+          comment.value.content = "";
+          getComments();
+        }).catch(e => {
+      ElMessage(e.response.data.validation.content);
+    })
+  } else {
+    router.push({name: 'login'})
+  }
 };
 
 const deleteComment = function (commentId: Number, memberId: Number) {
