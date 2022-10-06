@@ -30,22 +30,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenService tokenService;
-    private final ObjectMapper objectMapper;
 
     // 인증 제외할 url
     private static final List<String> EXCLUDE_URL = List.of(
-            "/weather/**",
-            "/post/totalPage"
+            "/members/join",
+            "/weather/forecast",
+            "/posts",
+            "/posts/totalPage",
+            "/posts/**",
+            "/comments"
     );
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        log.info("JwtAuthenticationFilter 진입");
-
         String accessToken = jwtTokenProvider.resolveToken(request);
         if (accessToken != null) {
-
             // 발급된 토큰이 만료 되었다면
             if (jwtTokenProvider.validTokenExpired(accessToken)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
@@ -88,12 +88,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .message("UnAuthorized")
                 .validation(Map.of("token", "invalid"))
                 .build();
-
-        response.getWriter().write(objectMapper.writeValueAsString(body));
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return EXCLUDE_URL.stream().anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()));
+
+        // 1. 일단 포함되어 있으며,
+        // 2. /posts/ && GET
+        // 3. /members/join
+        // 4. 나머지는 false
+        return EXCLUDE_URL.stream().anyMatch(exclude -> {
+            if (exclude.equalsIgnoreCase(request.getServletPath())) {
+                return true;
+            } else if (request.getServletPath().startsWith("/posts") && request.getMethod().equals("GET") && exclude.equalsIgnoreCase("/posts/**")) {
+                return true;
+            } else {
+                return false;
+            }
+        });
     }
 }
