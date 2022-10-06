@@ -8,7 +8,7 @@
     </el-menu-item>
     <el-menu-item index="2">
       <el-icon><document /></el-icon>
-      <el-link @click="posts">글 목록</el-link>
+      <el-link><router-link :to="{name: 'posts'}">글 목록</router-link></el-link>
     </el-menu-item>
     <el-sub-menu v-if="getIsAuth" index="3">
       <template #title>
