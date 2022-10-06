@@ -57,7 +57,6 @@ public class MemberService {
 
         MemberEditor memberEditor = editorBuilder
                 .name(memberEdit.getName())
-//                .password(memberEdit.getPassword())
                 .phone(memberEdit.getPhone())
                 .build();
 
