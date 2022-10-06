@@ -23,8 +23,8 @@ public class CommentController {
     }
 
     @GetMapping("/comments")
-    public List<CommentResponse> getList() {
-        return commentService.getList();
+    public List<CommentResponse> getList(@RequestParam Long postId) {
+        return commentService.getList(postId);
     }
 
     @PatchMapping("/comments/{commentId}")

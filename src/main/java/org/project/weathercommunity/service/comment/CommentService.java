@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.project.weathercommunity.domain.comment.Comment;
 import org.project.weathercommunity.domain.comment.CommentEditor;
 import org.project.weathercommunity.domain.member.Member;
+import org.project.weathercommunity.domain.post.Post;
 import org.project.weathercommunity.exception.MemberNotFoundException;
 import org.project.weathercommunity.exception.PostNotFoundException;
 import org.project.weathercommunity.repository.comment.CommentRepository;
@@ -46,9 +47,12 @@ public class CommentService {
     }
 
     @Transactional
-    public List<CommentResponse> getList() {
+    public List<CommentResponse> getList(Long postId) {
 
-        return commentRepository.findAll().stream()
+        Post post = postRepository.findById(postId)
+                .orElseThrow(PostNotFoundException::new);
+
+        return commentRepository.getList(post).stream()
                 .map(CommentResponse::new)
                 .collect(Collectors.toList());
     }
