@@ -45,8 +45,11 @@ const submitForm = () => {
         router.replace({name: 'home'});
       })
       .catch(e => {
-        console.log(e.response.data.message)
-        ElMessage(e.response.data.message)
+        if (e.response.status == 500) {
+          ElMessage("서버 오류입니다. 재시도 해주세요")
+        } else {
+          ElMessage(e.response.data)
+        }
       })
 }
 </script>
