@@ -106,18 +106,12 @@ script.onload = () => {
 
       // 마커 위치를 클릭한 위치로 옮깁니다
       // 위도 (y)
-      let latitude = latlng.getLat();
+      let latitude = parseFloat(latlng.getLat());
       // 경도 (x)
-      let longitude = latlng.getLng();
+      let longitude = parseFloat(latlng.getLng());
 
-      axios.post("/api/weather/forecast", {
-        baseDate: currentDate,
-        baseTime: currentTime,
-        longitude: parseFloat(longitude),  // 경도
-        latitude: parseFloat(latitude),   // 위도
-      })
+      axios.get(`/api/weather/forecast?baseDate=${currentDate}&baseTime=${currentTime}&longitude=${longitude}&latitude=${latitude}`)
           .then(r => {
-
             if (weatherData.value.length != 0) {
               weatherData.value.length = 0;
             }
