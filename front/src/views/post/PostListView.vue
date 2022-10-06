@@ -16,6 +16,9 @@
       <el-table-column prop="createdTime" label="작성일" width="150px"/>
     </el-table>
   </div>
+  <div>
+    <el-button type="primary" @click="write">글 작성</el-button>
+  </div>
   <div class="pagination" >
     <el-pagination
         style="justify-content: center"
@@ -28,9 +31,6 @@
         @current-change="pagination"
         class="mt-4"
     />
-  </div>
-  <div>
-    <el-button v-if="isAuth" type="primary" @click="write">글 작성</el-button>
   </div>
 </template>
 
@@ -46,15 +46,9 @@ const auth = useAuthStore();
 const posts = ref([])
 const totalPage = ref(0);
 const { isAuth } = storeToRefs(auth)
-const { getAccessToken } = storeToRefs(auth);
 
-const configs = {
-  headers: {
-    Authorization: getAccessToken.value,
-  }
-}
 
-axios.get("/api/post/totalPage", configs)
+axios.get("/api/posts/totalPage")
     .then(r => {
       totalPage.value = r.data;
     }).catch(e => {
@@ -62,7 +56,7 @@ axios.get("/api/post/totalPage", configs)
 })
 
 
-axios.get(`/api/posts?page=1&size=10`, configs)
+axios.get(`/api/posts`)
     .then(res => {
       res.data.forEach((r: any) => {
         posts.value.push(r);
@@ -75,7 +69,12 @@ axios.get(`/api/posts?page=1&size=10`, configs)
     })
 
 const write = function () {
-  router.replace( {name: 'write'} )
+  if (isAuth.value) {
+    router.push( {name: 'write'} )
+  } else {
+    router.push({name: 'login'})
+  }
+
 };
 
 const total = function () {
@@ -84,7 +83,7 @@ const total = function () {
 
 const pagination = (e: number) => {
 
-  axios.get(`/api/posts?page=${e}&size=10`, configs)
+  axios.get(`/api/posts?page=${e}&size=10`)
       .then(res => {
         posts.value.length = 0
         res.data.forEach((r: any) => {
