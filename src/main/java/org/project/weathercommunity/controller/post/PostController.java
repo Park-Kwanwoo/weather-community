@@ -59,7 +59,7 @@ public class PostController {
         postService.delete(id);
     }
 
-    @GetMapping("/post/totalPage")
+    @GetMapping("/posts/totalPage")
     public long totalPage() {
         return postService.totalPage();
     }
