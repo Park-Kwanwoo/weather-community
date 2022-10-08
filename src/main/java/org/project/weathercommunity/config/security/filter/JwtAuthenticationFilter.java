@@ -24,7 +24,8 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-// 토큰 인증을 담당하는 클래스
+
+// 토큰 인증 필터
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -44,15 +45,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String accessToken = jwtTokenProvider.resolveToken(request);
         if (accessToken != null) {
-            // 발급된 토큰이 만료 되었다면
+
+            // accessToken이 만료 되지 않았다면
             if (jwtTokenProvider.validTokenExpired(accessToken)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
+                // accessToken이 만료 되었다면
                 Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
                 Member savedMember = (Member) authentication.getPrincipal();
                 String refreshToken = tokenService.getRefreshToken(savedMember);
 
+                // refreshToken이 만료 되지 않았다면
                 if (jwtTokenProvider.validTokenExpired(refreshToken)) {
                     String reAccessToken = jwtTokenProvider.createAccessToken(savedMember.getEmail());
                     String reRefreshToken = jwtTokenProvider.createRefreshToken(savedMember.getEmail());
@@ -65,6 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     tokenService.reIssueToken(tokenEditor, savedMember);
 
                 } else {
+                    // refreshToken이 만료 되었다면
                     tokenService.deleteToken(savedMember);
                     setErrorResponse(response);
                     SecurityContextHolder.clearContext();
