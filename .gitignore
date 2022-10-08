@@ -39,3 +39,4 @@ out/
 
 ### DB ###
 :
+/src/main/resources/data.sql
