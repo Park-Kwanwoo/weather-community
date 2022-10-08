@@ -6,8 +6,8 @@
         label="email">
       <el-input name="email" v-model="loginData.email" type="text"/>
     </el-form-item>
-      <el-form-item label="password">
-        <el-input name="password" v-model="loginData.password" type="password"/>
+    <el-form-item label="password">
+      <el-input name="password" v-model="loginData.password" type="password"/>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" v-on:click.prevent="submitForm" class="btn-primary">로그인</el-button>
@@ -37,19 +37,16 @@ const configs = {
 }
 
 const submitForm = () => {
+
   axios.post("/api/members/login", loginData, configs)
-      .then((r) => {
-        auth.setAuth(true)
-        auth.setAccessToken(r.data.token);
-        auth.setId(r.data.id);
-        router.replace({name: 'home'});
-      })
-      .catch(e => {
-        if (e.response.status == 500) {
-          ElMessage("서버 오류입니다. 재시도 해주세요")
-        } else {
+        .then((r) => {
+          auth.setAuth(true)
+          auth.setAccessToken(r.data.token);
+          auth.setId(r.data.id);
+          router.replace({name: 'home'});
+        })
+        .catch(e => {
           ElMessage(e.response.data)
-        }
-      })
+        });
 }
 </script>
