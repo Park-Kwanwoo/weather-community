@@ -3,6 +3,7 @@ package org.project.weathercommunity.config.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.config.security.token.VueAuthenticationToken;
+import org.project.weathercommunity.exception.LoginValueEmptyException;
 import org.project.weathercommunity.request.member.MemberLogin;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -40,7 +41,7 @@ public class VueLoginProcessingFilter extends AbstractAuthenticationProcessingFi
 
         MemberLogin memberLogin = objectMapper.readValue(request.getReader(), MemberLogin.class);
         if (!StringUtils.hasText(memberLogin.getPassword()) || !StringUtils.hasText(memberLogin.getEmail())) {
-            throw new IllegalArgumentException("Username or Password is Empty");
+            throw new LoginValueEmptyException("value","이메일과 비밀번호를 제대로 입력해주세요.");
         }
 
         VueAuthenticationToken token = new VueAuthenticationToken(memberLogin.getEmail(), memberLogin.getPassword());
