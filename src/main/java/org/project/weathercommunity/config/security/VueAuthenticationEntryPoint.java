@@ -15,11 +15,8 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class VueAuthenticationEntryPoint implements AuthenticationEntryPoint {
-
-
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        log.info("VueAuthenticationEntryPoint");
 
     }
 }
