@@ -1,6 +1,5 @@
 package org.project.weathercommunity.config.security.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.project.weathercommunity.config.security.token.JwtTokenProvider;
@@ -34,10 +33,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 인증 제외할 url
     private static final List<String> EXCLUDE_URL = List.of(
             "/members/join",
+            "/members/login",
             "/weather/forecast",
             "/posts",
-            "/posts/totalPage",
-            "/posts/**",
             "/comments"
     );
 
@@ -100,7 +98,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return EXCLUDE_URL.stream().anyMatch(exclude -> {
             if (exclude.equalsIgnoreCase(request.getServletPath())) {
                 return true;
-            } else if (request.getServletPath().startsWith("/posts") && request.getMethod().equals("GET") && exclude.equalsIgnoreCase("/posts/**")) {
+            } else if (request.getServletPath().startsWith("/posts") && request.getMethod().equals("GET") && exclude.equalsIgnoreCase("/posts")) {
                 return true;
             } else {
                 return false;
