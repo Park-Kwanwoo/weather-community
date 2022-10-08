@@ -19,6 +19,12 @@ public class TokenService {
     @Transactional
     public void saveToken(TokenRequest tokenRequest, Member member) {
 
+        // 비정상적으로 종료되어 토큰이 삭제되지 않았을 때
+        // 토큰이 존재한다면 제거
+        tokenRepository.findByMember(member).ifPresent(token -> {
+            tokenRepository.deleteById(token.getId());
+        });
+
         Token token = Token.builder()
                 .accessToken(tokenRequest.getAccessToken())
                 .refreshToken(tokenRequest.getRefreshToken())
