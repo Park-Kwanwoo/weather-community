@@ -28,7 +28,7 @@ public class Member extends BaseTimeEntity {
 
     private String password;
 
-    private String name;
+    private String nickname;
 
     private String phone;
 
@@ -45,25 +45,23 @@ public class Member extends BaseTimeEntity {
     private Token token;
 
     @Builder
-    public Member(String email, String password, String name, String phone) {
+    public Member(String email, String password, String nickname, String phone) {
         this.email = email;
         this.password = password;
-        this.name = name;
+        this.nickname = nickname;
         this.phone = phone;
         this.role = Role.ROLE_USER;
     }
 
     public MemberEditor.MemberEditorBuilder toEditor() {
         return MemberEditor.builder()
-                .name(name)
-                .password(password)
+                .nickname(nickname)
                 .phone(phone);
     }
 
     public void edit(MemberEditor memberEditor) {
-        this.name = memberEditor.getName();
+        this.nickname = memberEditor.getNickname();
         this.phone = memberEditor.getPhone();
-        this.password = memberEditor.getPassword();
     }
 
     public PasswordEditor.PasswordEditorBuilder toPasswordEditor() {

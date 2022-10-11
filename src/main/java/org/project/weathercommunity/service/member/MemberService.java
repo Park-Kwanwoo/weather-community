@@ -6,6 +6,8 @@ import org.project.weathercommunity.config.security.token.JwtTokenProvider;
 import org.project.weathercommunity.domain.member.Member;
 import org.project.weathercommunity.domain.member.MemberEditor;
 import org.project.weathercommunity.domain.member.PasswordEditor;
+import org.project.weathercommunity.exception.MemberEmailDuplicationException;
+import org.project.weathercommunity.exception.MemberNicknameDuplicationException;
 import org.project.weathercommunity.exception.MemberNotFoundException;
 import org.project.weathercommunity.exception.PasswordNotMatchException;
 import org.project.weathercommunity.repository.member.MemberRepository;
@@ -14,7 +16,6 @@ import org.project.weathercommunity.request.member.MemberEdit;
 import org.project.weathercommunity.request.member.PasswordEdit;
 import org.project.weathercommunity.response.member.MemberMypageResponse;
 import org.project.weathercommunity.service.token.TokenService;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,13 +39,18 @@ public class MemberService {
 
         Member member = Member.builder()
                 .email(memberCreate.getEmail())
-                .name(memberCreate.getName())
+                .nickname(memberCreate.getNickname())
                 .password(passwordEncoder.encode(memberCreate.getPassword()))
                 .phone(memberCreate.getPhone())
                 .build();
 
-        memberRepository.save(member);
-
+        if (memberRepository.existsByEmail(member.getEmail())) {
+            throw new MemberEmailDuplicationException("email", "이미 존재하는 이메일입니다.");
+        } else if (memberRepository.existsByNickname(member.getNickname())) {
+            throw new MemberNicknameDuplicationException("nickname", "이미 존재하는 닉넨임입니다.");
+        } else {
+            memberRepository.save(member);
+        }
     }
 
     @Transactional
@@ -56,12 +62,14 @@ public class MemberService {
         MemberEditor.MemberEditorBuilder editorBuilder = member.toEditor();
 
         MemberEditor memberEditor = editorBuilder
-                .name(memberEdit.getName())
-                .phone(memberEdit.getPhone())
+                .nickname(memberEdit.getNickname())
                 .build();
 
-
-        member.edit(memberEditor);
+        if (memberRepository.existsByNickname(memberEdit.getNickname())) {
+            throw new MemberNicknameDuplicationException("nickname", "이미 존재하는 닉네임입니다.");
+        } else {
+            member.edit(memberEditor);
+        }
     }
 
     public void delete(Long id) {
@@ -78,17 +86,11 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
 
         return MemberMypageResponse.builder()
-                .id(member.getId())
                 .email(member.getEmail())
-                .password(member.getPassword())
-                .name(member.getName())
+                .nickname(member.getNickname())
                 .phone(member.getPhone())
                 .build();
 
-    }
-
-    public boolean duplicateCheck(String email) {
-        return memberRepository.existsByEmail(email);
     }
 
     public void logout(HttpServletRequest request) {

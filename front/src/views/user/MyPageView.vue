@@ -9,8 +9,8 @@
         <el-input v-model="userInfo.email" readonly/>
       </el-form-item>
 
-      <el-form-item label="이름">
-        <el-input v-model="userInfo.name" />
+      <el-form-item label="닉네임">
+        <el-input v-model="userInfo.nickname" />
       </el-form-item>
 
       <el-form-item label="전화번호">
@@ -51,7 +51,7 @@ const configs = {
 const userInfo = ref({
   id: 0,
   email: "",
-  name: "",
+  nickname: "",
   phone: ""
 })
 

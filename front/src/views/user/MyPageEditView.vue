@@ -9,8 +9,8 @@
         <el-input v-model="userInfo.email" readonly/>
       </el-form-item>
 
-      <el-form-item label="이름">
-        <el-input v-model="userInfo.name" />
+      <el-form-item label="닉네임">
+        <el-input v-model="userInfo.nickname" />
       </el-form-item>
 
       <el-form-item label="전화번호">
@@ -43,10 +43,8 @@ const props = defineProps({
 })
 
 const userInfo = ref({
-  id: 0,
   email: "",
-  password: "",
-  name: "",
+  nickname: "",
   phone: ""
 })
 
@@ -67,15 +65,13 @@ axios.get(`/api/members/${props.memberId}`, configs)
 
 const edit = function () {
   axios.patch(`/api/members/${props.memberId}`, {
-    password: userInfo.value.password,
-    name: userInfo.value.name,
-    phone: userInfo.value.phone,
+    nickname: userInfo.value.nickname
   }, configs)
       .then(r => {
         router.push({name: 'myPage', params: {memberId: props.memberId}})
       })
       .catch(e => {
-        ElMessage(e.response.data.validation.name)
+        ElMessage(e.response.data.validation.nickname)
       })
 };
 

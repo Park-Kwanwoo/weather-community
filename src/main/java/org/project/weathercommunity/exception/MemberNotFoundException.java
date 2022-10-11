@@ -16,6 +16,11 @@ public class MemberNotFoundException extends WeatherCommunityException {
         super(MESSAGE, cause);
     }
 
+    public MemberNotFoundException(String field, String message) {
+        super(MESSAGE);
+        addValidation(field, message);
+    }
+
     @Override
     public int getStatusCode() {
         return 404;

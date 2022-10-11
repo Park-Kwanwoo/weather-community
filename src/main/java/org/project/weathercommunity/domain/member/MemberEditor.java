@@ -6,14 +6,12 @@ import lombok.Getter;
 @Getter
 public class MemberEditor {
 
-    private final String name;
+    private final String nickname;
     private final String phone;
-    private final String password;
 
     @Builder
-    public MemberEditor(String name, String phone, String password) {
-        this.name = name;
+    public MemberEditor(String nickname, String phone) {
+        this.nickname = nickname;
         this.phone = phone;
-        this.password = password;
     }
 }
