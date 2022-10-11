@@ -26,9 +26,9 @@
 
 
   <div class="mt-2">
-    <h3>이름</h3>
-    <p id="name">{{ errorResponse.name }}</p>
-    <el-input v-model="name" rows="15" placeholder="이름을 입력해주세요."></el-input>
+    <h3>닉네임</h3>
+    <p id="name">{{ errorResponse.nickname }}</p>
+    <el-input v-model="nickname" rows="15" placeholder="닉네임을 입력해주세요."></el-input>
   </div>
 
   <div class="mt-2">
@@ -45,13 +45,13 @@ import {useRouter} from "vue-router";
 const router = useRouter();
 const email = ref('');
 const phone = ref('');
-const name = ref('');
+const nickname = ref('');
 const password = ref('');
 
 const errorResponse = ref({
   email: '',
   password: '',
-  name: '',
+  nickname: '',
   phone: ''
 })
 
@@ -60,7 +60,7 @@ const join = function () {
   axios.post('/api/members/join', {
     email: email.value,
     password: password.value,
-    name: name.value,
+    nickname: nickname.value,
     phone: phone.value
   })
       .then((r) => {
@@ -69,7 +69,7 @@ const join = function () {
         }
       })
       .catch((e) => {
-        errorResponse.value = {email: '', name: '', phone: '', password: ''};
+        errorResponse.value = {email: '', nickname: '', phone: '', password: ''};
         errorResponse.value = e.response.data.validation;
       })
 }
