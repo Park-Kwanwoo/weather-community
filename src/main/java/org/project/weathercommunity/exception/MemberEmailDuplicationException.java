@@ -1,5 +1,9 @@
 package org.project.weathercommunity.exception;
 
+import org.springframework.http.HttpStatus;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
 public class MemberEmailDuplicationException extends WeatherCommunityException {
 
     private static final String MESSAGE = "사용할 수 없는 이메일입니다.";
@@ -19,6 +23,6 @@ public class MemberEmailDuplicationException extends WeatherCommunityException {
 
     @Override
     public int getStatusCode() {
-        return 404;
+        return BAD_REQUEST.value();
     }
 }
