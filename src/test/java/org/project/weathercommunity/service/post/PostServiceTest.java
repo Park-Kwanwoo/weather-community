@@ -1,208 +1,185 @@
 package org.project.weathercommunity.service.post;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.project.weathercommunity.domain.member.Member;
 import org.project.weathercommunity.domain.post.Post;
 import org.project.weathercommunity.exception.PostNotFoundException;
 import org.project.weathercommunity.repository.post.PostRepository;
 import org.project.weathercommunity.request.post.PostCreate;
 import org.project.weathercommunity.request.post.PostEdit;
 import org.project.weathercommunity.request.post.PostSearch;
-import org.project.weathercommunity.response.post.PostResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.project.weathercommunity.response.post.PostListResponse;
+import org.project.weathercommunity.response.post.PostOneResponse;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.BDDMockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class PostServiceTest {
 
-    @Autowired
-    private PostRepository postRepository;
+    @Mock
+    PostRepository postRepository;
 
-    @Autowired
+    @Spy
+    @InjectMocks
     private PostService postService;
 
-    @BeforeEach
-    void clean() {
-        postRepository.deleteAll();
-    }
+    @Mock
+    Authentication authentication;
 
-//    @Test
-//    @DisplayName("글 작성")
-//    void 글_작성() {
-//
-//        // given
-//        PostCreate postCreate = PostCreate.builder()
-//                .title("제목")
-//                .content("내용")
-//                .build();
-//
-//        // when
-//        postService.write(postCreate, );
-//
-//        // then
-//        assertEquals(1L, postRepository.count());
-//        Post post = postRepository.findAll().get(0);
-//        assertEquals("제목", post.getTitle());
-//        assertEquals("내용", post.getContent());
-//    }
+    Member member = Member.builder()
+            .email("test@case.com")
+            .phone("010-1234-1234")
+            .nickname("아무개")
+            .build();
 
-    @Test
-    @DisplayName("post 단건 조회")
-    void POST_단건_조회() {
-
-        // given
-        Post request = Post.builder()
-                .title("foo")
-                .content("bar")
-                .build();
-        postRepository.save(request);
-
-
-        // 클라이언트 요구사항
-        // json 응답에서 title값 길이를 최대 10글자로 제한.
-
-        // when
-        PostResponse post = postService.get(request.getId());
-
-        // then
-        assertNotNull(post);
-        Post response = postRepository.findAll().get(0);
-        assertEquals("foo", response.getTitle());
-        assertEquals("bar", response.getContent());
-    }
-
-    @Test
-    @DisplayName("글 1개 조회 실패")
-    void 글_단건_조회_실패_케이스() {
-
-        // given
-        Post post = Post.builder()
+    private PostCreate postCreate() {
+        return PostCreate.builder()
                 .title("제목")
                 .content("내용")
                 .build();
-        postRepository.save(post);
+    }
+
+    private Post toPostEntity(PostCreate postCreate) {
+        return Post.builder()
+                .title(postCreate.getTitle())
+                .content(postCreate.getContent())
+                .member(member)
+                .build();
+    }
+
+    @Test
+    @DisplayName("글 작성")
+    void POST_WRITE() {
+
+        // given
+        PostCreate postCreate = postCreate();
+        Post post = toPostEntity(postCreate);
+
+        willReturn(member).given(authentication).getPrincipal();
+        willReturn(post).given(postRepository).save(any());
+
+        // when
+        postService.write(postCreate, authentication);
+
+        // then
+        then(postService).should().write(argThat(request -> request.getTitle().equals("제목")), argThat(authentication -> authentication.getPrincipal().equals(member)));
+        then(postService).should().write(argThat(request -> request.getContent().equals("내용")), argThat(authentication -> authentication.getPrincipal().equals(member)));
+
+        assertEquals(postRepository.save(post).getContent(), postCreate.getContent());
+        assertEquals(postRepository.save(post).getTitle(), postCreate.getTitle());
+    }
+
+    @Test
+    @DisplayName("POST 단건 조회")
+    void POST_GET_ONE() {
+
+        // given
+        PostCreate postCreate = postCreate();
+        Post post = toPostEntity(postCreate);
+
+        willReturn(Optional.of(post)).given(postRepository).findById(any());
+
+        // when
+        PostOneResponse postResponse = postService.get(any());
+
+        // then
+        assertEquals(postResponse.getContent(), postCreate.getContent());
+        assertEquals(postResponse.getTitle(), postCreate.getTitle());
+    }
+
+    @Test
+    @DisplayName("글 단건 조회 실패")
+    void FAILED_CASE_WHEN_GET_SINGLE_POST() {
+
+        // given
+        willThrow(new PostNotFoundException()).given(postRepository).findById(any());
 
         // expected
-        assertThrows(PostNotFoundException.class, () -> {
-            postService.get(post.getId() + 1L);
-        });
+        assertThrows(PostNotFoundException.class, () -> postService.get(any()));
+
     }
 
 
     @Test
     @DisplayName("post 페이징 1페이지 조회")
-
-    void POST_페이징_목록_조회() {
+    void POST_GET_PAGING_LIST() {
 
         // given
-        List<Post> requestPosts = IntStream.range(1, 31)
+        List<PostListResponse> responsePost = IntStream.range(1, 11)
                 .mapToObj(i -> {
-                    return Post.builder()
-                            .title("제목" + i)
-                            .content("내용" + i)
+                    return PostListResponse.builder()
+                            .title("제목" + (11 - i))
+                            .content("내용" + (11 - i))
                             .build();
                 })
                 .collect(Collectors.toList());
-
-        postRepository.saveAll(requestPosts);
 
         PostSearch postSearch = PostSearch.builder()
                 .page(1)
                 .size(10)
                 .build();
+
+        willReturn(responsePost).given(postService).getList(postSearch);
+
         // when
-        List<PostResponse> posts = postService.getList(postSearch);
+        List<PostListResponse> posts = postService.getList(postSearch);
 
         // then
         assertEquals(10L, posts.size());
-        assertEquals("제목30", posts.get(0).getTitle());
-        assertEquals("내용26", posts.get(4).getContent());
+        assertEquals("제목10", posts.get(0).getTitle());
+        assertEquals("내용6", posts.get(4).getContent());
     }
 
     @Test
-    @DisplayName("글 제목 수정")
-    void 글_제목_수정() {
+    @DisplayName("글 수정")
+    void POST_EDIT() {
 
         // given
-        Post post = Post.builder()
-                .title("수정전")
-                .content("내용")
-                .build();
+        PostCreate postCreate = postCreate();
+        Post post = toPostEntity(postCreate);
 
-        postRepository.save(post);
+        willReturn(Optional.of(post)).given(postRepository).findById(any());
 
         PostEdit postEdit = PostEdit.builder()
-                .title("수정후")
-                .content("내용")
+                .title("변경 제목")
+                .content("변경 내용")
                 .build();
 
         // when
         postService.edit(post.getId(), postEdit);
 
-
         // then
-        Post changedPost = postRepository.findById(post.getId())
-                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
-
-        assertEquals("수정후", changedPost.getTitle());
+        assertEquals("변경 제목", post.getTitle());
+        assertEquals("변경 내용", post.getContent());
     }
 
     @Test
-    @DisplayName("글 내용 수정 - 존재하지 않는 글")
-    void 글_내용_수정() {
+    @DisplayName("게시글 삭제")
+    void POST_DELETE() {
 
         // given
-        Post post = Post.builder()
-                .title("제목")
-                .content("내용전")
-                .build();
-
-        postRepository.save(post);
-
-        PostEdit postEdit = PostEdit.builder()
-                .title("제목")
-                .content("내용후")
-                .build();
+        willDoNothing().given(postService).delete(any());
 
         // when
-        postService.edit(post.getId(), postEdit);
-
+        postService.delete(1L);
 
         // then
-        Post changedPost = postRepository.findById(post.getId())
-                .orElseThrow(PostNotFoundException::new);
-
-        assertEquals("내용후", changedPost.getContent());
-
-        // expected
-        assertThrows(PostNotFoundException.class, () -> {
-            postService.edit(post.getId() + 1L, postEdit);
-        });
-
-    }
-
-    @Test
-    @DisplayName("게시글 삭제 - 존재하지 않는 글")
-    void 게시글_삭제() {
-
-        // given
-        Post post = Post.builder()
-                .title("제목")
-                .content("내용")
-                .build();
-
-        postRepository.save(post);
-
-        // expected
-        assertThrows(PostNotFoundException.class, () -> {
-            postService.delete(post.getId() + 1L);
-        });
+        then(postService).should(times(1)).delete(any());
     }
 }
