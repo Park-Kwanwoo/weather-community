@@ -1,6 +1,5 @@
 package org.project.weathercommunity.service.member;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,15 +13,16 @@ import org.project.weathercommunity.repository.member.MemberRepository;
 import org.project.weathercommunity.request.member.MemberCreate;
 import org.project.weathercommunity.request.member.MemberEdit;
 import org.project.weathercommunity.request.member.PasswordEdit;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.project.weathercommunity.response.member.MemberMypageResponse;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
@@ -34,14 +34,9 @@ class MemberServiceTest {
     @InjectMocks
     MemberService memberService;
 
-    @Mock
-    PasswordEncoder passwordEncoder;
+    @Spy
+    BCryptPasswordEncoder passwordEncoder;
 
-
-    @BeforeEach
-    void clean() {
-        memberRepository.deleteAll();
-    }
 
     private Member createMemberEntity(MemberCreate memberCreate) {
         return Member.builder()
@@ -62,82 +57,78 @@ class MemberServiceTest {
                 .build();
     }
 
+
+
     @Test
     @DisplayName("회원 가입")
-    void Member_Join() {
+    void MEMBER_JOIN() {
 
         // given
         MemberCreate memberCreate = memberCreateRequest();
         Member member = createMemberEntity(memberCreate);
 
-        Long fakeMemberId = 1L;
-        ReflectionTestUtils.setField(member, "id", fakeMemberId);
 
-        given(memberRepository.save(any()))
-                .willReturn(member);
+        // Member 객체 어떠한 것을 저장하더라도 개발자가 정해놓은 member를 반환
+        willReturn(member).given(memberRepository).save(any(Member.class));
 
         // when
         memberService.join(memberCreate);
+        Member savedMember = memberRepository.save(member);
 
         // then
-        // verify: Method 실행 확인
-        verify(memberService, times(1)).join(argThat(memberRequest -> memberRequest.getEmail().equals("test@case.com")));
-        verify(memberService, times(1)).join(argThat(memberRequest -> memberRequest.getEmail().equals("test@case.com")));
-        verify(memberService, times(1)).join(argThat(memberRequest -> memberRequest.getNickname().equals("아이스아메리카노")));
-        verify(memberService, times(1)).join(argThat(memberRequest -> memberRequest.getPassword().equals("qwer123$")));
-        verify(memberService, times(1)).join(argThat(memberRequest -> memberRequest.getPhone().equals("010-1234-1234")));
+        then(memberService).should().join(argThat(memberRequest -> memberRequest.getEmail().equals("test@case.com")));
+        then(memberService).should().join(argThat(memberRequest -> memberRequest.getEmail().equals("test@case.com")));
+        then(memberService).should().join(argThat(memberRequest -> memberRequest.getNickname().equals("아이스아메리카노")));
+        then(memberService).should().join(argThat(memberRequest -> memberRequest.getPassword().equals("qwer123$")));
+        then(memberService).should().join(argThat(memberRequest -> memberRequest.getPhone().equals("010-1234-1234")));
+
+        then(memberService).should(times(1)).join(memberCreate);
+
+
+        assertEquals(memberCreate.getEmail(), savedMember.getEmail());
+        assertEquals(memberCreate.getNickname(), savedMember.getNickname());
+        assertEquals(memberCreate.getPhone(), savedMember.getPhone());
+        assertTrue(passwordEncoder.matches(memberCreate.getPassword(), savedMember.getPassword()));
 
     }
 
-
     @Test
     @DisplayName("회원 비밀번호 수정")
-    void 회원_비밀번호_수정() {
+    void MEMBER_PASSWORD_EDIT() {
 
         // given
-        Member member = Member.builder()
-                .email("test@case.com")
-                .nickname("테스터")
-                .phone("010-1234-5678")
-                .password(passwordEncoder.encode("tester123$"))
-                .build();
+        MemberCreate memberCreate = memberCreateRequest();
+        Member member = createMemberEntity(memberCreate);
 
-        memberRepository.save(member);
 
         PasswordEdit passwordEdit = PasswordEdit.builder()
-                .oldPassword("tester123$")
-                .newPassword("qwer123$")
+                .oldPassword("qwer123$")
+                .newPassword("tester123$")
                 .build();
+
+        willReturn(Optional.of(member)).given(memberRepository).findById(any());
 
         // when
         memberService.passwordEdit(member.getId(), passwordEdit);
 
         // then
-        Member changedMember = memberRepository.findById(member.getId())
-                .orElseThrow(MemberNotFoundException::new);
-
-        assertTrue(passwordEncoder.matches("qwer123$", changedMember.getPassword()));
+        assertTrue(passwordEncoder.matches(passwordEdit.getNewPassword(), member.getPassword()));
     }
-
 
     @Test
     @DisplayName("회원 정보 수정")
-    void 회원_정보_수정() {
+    void MEMBER_EDIT() {
 
         // given
-        Member member = Member.builder()
-                .nickname("테스터")
-                .email("test@email.com")
-                .password(passwordEncoder.encode("tester123$"))
-                .phone("010-1111-1111")
-                .build();
+        MemberCreate memberCreate = memberCreateRequest();
+        Member member = createMemberEntity(memberCreate);
 
-        memberRepository.save(member);
-
-        // when
         MemberEdit memberEdit = MemberEdit.builder()
                 .nickname("강낭콩")
                 .build();
+
+        // when
+        willReturn(Optional.of(member)).given(memberRepository).findById(any());
 
         memberService.edit(member.getId(), memberEdit);
 
@@ -146,32 +137,48 @@ class MemberServiceTest {
                 .orElseThrow(MemberNotFoundException::new);
 
 
-        assertAll(
-                () -> assertEquals("강낭콩", changedMember.getNickname()),
-                () -> assertEquals("010-2222-2222", changedMember.getPhone())
-        );
+        assertEquals("강낭콩", changedMember.getNickname());
     }
 
     @Test
     @DisplayName("회원 삭제 테스트")
-    void 회원_삭제_테스트() {
+    void MEMBER_DELETE() {
 
         // given
-        Member member = Member.builder()
-                .email("test@case.com")
-                .nickname("테스터")
-                .phone("010-1234-5678")
-                .password("tester")
-                .build();
+        MemberCreate memberCreate = memberCreateRequest();
+        Member member = createMemberEntity(memberCreate);
 
-        memberRepository.save(member);
+        willReturn(Optional.of(member)).given(memberRepository).findById(any());
 
         // when
         memberService.delete(member.getId());
 
         // then
-        assertThrows(MemberNotFoundException.class, () -> {
-           memberService.delete(member.getId());
-        });
+        then(memberRepository).should(times(1)).findById(any());
+        then(memberRepository).should(times(1)).delete(member);
+
+    }
+
+    @Test
+    @DisplayName("회원 개인 정보")
+    void MEMBER_PERSONAL_INFO() {
+
+        // given
+        MemberCreate memberCreate = memberCreateRequest();
+        Member member = createMemberEntity(memberCreate);
+
+
+        willReturn(Optional.of(member)).given(memberRepository).findById(any());
+
+        // when
+        MemberMypageResponse memberResponse = memberService.get(member.getId());
+
+        // then
+        then(memberRepository).should(times(1)).findById(any());
+
+        assertEquals(member.getEmail(), memberResponse.getEmail());
+        assertEquals(member.getNickname(), memberResponse.getNickname());
+        assertEquals(member.getPhone(), memberResponse.getPhone());
+
     }
 }
