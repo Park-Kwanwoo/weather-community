@@ -22,7 +22,7 @@ public class PostListResponse {
         this.title = post.getTitle();
         this.content = post.getContent();
         this.createdTime = post.getCreatedDate().substring(5, 16);
-        this.memberName = post.getMember().getName();
+        this.memberName = post.getMember().getNickname();
     }
     @Builder
     public PostListResponse(Long id, String title, String content, String createdTime, String memberName) {
