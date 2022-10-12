@@ -21,7 +21,7 @@ public class CommentResponse {
         this.content = comment.getContent();
         this.createTime = comment.getCreatedDate().substring(5, 16);
         this.postId = comment.getPost().getId();
-        this.nickname = comment.getMember().getName();
+        this.nickname = comment.getMember().getNickname();
         this.memberId = comment.getMember().getId();
     }
 
