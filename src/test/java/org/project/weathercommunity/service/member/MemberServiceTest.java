@@ -47,7 +47,7 @@ class MemberServiceTest {
                 .build();
     }
 
-    private MemberCreate memberCreateRequest() {
+    private MemberCreate memberCreate() {
 
         return MemberCreate.builder()
                 .email("test@case.com")
@@ -64,7 +64,7 @@ class MemberServiceTest {
     void MEMBER_JOIN() {
 
         // given
-        MemberCreate memberCreate = memberCreateRequest();
+        MemberCreate memberCreate = memberCreate();
         Member member = createMemberEntity(memberCreate);
 
 
@@ -97,7 +97,7 @@ class MemberServiceTest {
     void MEMBER_PASSWORD_EDIT() {
 
         // given
-        MemberCreate memberCreate = memberCreateRequest();
+        MemberCreate memberCreate = memberCreate();
         Member member = createMemberEntity(memberCreate);
 
 
@@ -120,7 +120,7 @@ class MemberServiceTest {
     void MEMBER_EDIT() {
 
         // given
-        MemberCreate memberCreate = memberCreateRequest();
+        MemberCreate memberCreate = memberCreate();
         Member member = createMemberEntity(memberCreate);
 
         MemberEdit memberEdit = MemberEdit.builder()
@@ -145,7 +145,7 @@ class MemberServiceTest {
     void MEMBER_DELETE() {
 
         // given
-        MemberCreate memberCreate = memberCreateRequest();
+        MemberCreate memberCreate = memberCreate();
         Member member = createMemberEntity(memberCreate);
 
         willReturn(Optional.of(member)).given(memberRepository).findById(any());
@@ -164,7 +164,7 @@ class MemberServiceTest {
     void MEMBER_PERSONAL_INFO() {
 
         // given
-        MemberCreate memberCreate = memberCreateRequest();
+        MemberCreate memberCreate = memberCreate();
         Member member = createMemberEntity(memberCreate);
 
 
