@@ -148,14 +148,13 @@ class MemberServiceTest {
         MemberCreate memberCreate = memberCreate();
         Member member = createMemberEntity(memberCreate);
 
-        willReturn(Optional.of(member)).given(memberRepository).findById(any());
+        willDoNothing().given(memberService).delete(any());
 
         // when
         memberService.delete(member.getId());
 
         // then
-        then(memberRepository).should(times(1)).findById(any());
-        then(memberRepository).should(times(1)).delete(member);
+        then(memberService).should(times(1)).delete(any());
 
     }
 
