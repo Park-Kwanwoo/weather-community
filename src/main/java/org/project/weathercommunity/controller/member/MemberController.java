@@ -21,9 +21,7 @@ public class MemberController {
 
     @PostMapping("/members/join")
     public void join(@RequestBody @Valid MemberCreate memberCreate) {
-
         memberService.join(memberCreate);
-
     }
 
     @GetMapping("/members/{memberId}")
