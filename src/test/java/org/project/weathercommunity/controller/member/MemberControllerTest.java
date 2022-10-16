@@ -4,18 +4,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.project.weathercommunity.config.security.token.JwtTokenProvider;
 import org.project.weathercommunity.domain.member.Member;
 import org.project.weathercommunity.domain.member.Role;
+import org.project.weathercommunity.domain.token.Token;
+import org.project.weathercommunity.exception.TokenNotFoundException;
 import org.project.weathercommunity.repository.member.MemberRepository;
+import org.project.weathercommunity.repository.token.TokenRepository;
 import org.project.weathercommunity.request.member.MemberCreate;
 import org.project.weathercommunity.request.member.MemberEdit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -24,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestPropertySource(properties = {"spring.config.location = classpath:application-test.yml"})
 class MemberControllerTest {
 
     @Autowired
@@ -31,6 +38,12 @@ class MemberControllerTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private TokenRepository tokenRepository;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -45,12 +58,12 @@ class MemberControllerTest {
 
     @Test
     @DisplayName("회원가입 컨트롤러 테스트")
-    void 회원가입_컨트롤러_테스트() throws Exception {
+    void JOIN_MEMBER() throws Exception {
 
         // given
         MemberCreate request = MemberCreate.builder()
-                .email("test@case.com")
-                .name("테스터")
+                .email("test@never.com")
+                .nickname("테스터")
                 .phone("010-1234-5678")
                 .password("tester12#")
                 .build();
@@ -72,22 +85,22 @@ class MemberControllerTest {
                 () -> assertNotEquals("tester12#", passwordEncoder.encode("tester12#")),
                 () -> assertTrue(passwordEncoder.matches("tester12#", encodedPassword))
         );
-        assertEquals("test@case.com", member.getEmail());
-        assertEquals("테스터", member.getName());
+        assertEquals("test@never.com", member.getEmail());
+        assertEquals("테스터", member.getNickname());
         assertEquals("010-1234-5678", member.getPhone());
         assertEquals(Role.ROLE_USER, member.getRole());
     }
 
     @Test
     @DisplayName("회원 가입 시 이메일 양식에 맞지 않으면 오류를 리턴")
-    void 회원_이메일_검증() throws Exception {
+    void VALID_MEMBER_EMAIL() throws Exception {
 
         // given
         MemberCreate member = MemberCreate.builder()
 //                .email("test@case!com")
-//                .email("@test.com")
-                .email("test@case.gmail")
-                .name("테스터")
+                .email("@test.com")
+//                .email("test@never.com")
+                .nickname("테스터")
                 .phone("010-1234-5678")
                 .password("tester12#")
                 .build();
@@ -96,8 +109,8 @@ class MemberControllerTest {
 
         // expected
         mockMvc.perform(post("/members/join")
-                .contentType(APPLICATION_JSON)
-                .content(jsonValue))
+                        .contentType(APPLICATION_JSON)
+                        .content(jsonValue))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("400"))
                 .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
@@ -107,12 +120,12 @@ class MemberControllerTest {
 
     @Test
     @DisplayName("회원 가입 시 전화번호 양식에 맞지 않으면 오류를 리턴")
-    void 회원_전화번호_검증() throws Exception {
+    void VALID_MEMBER_PHONE() throws Exception {
 
         // given
         MemberCreate member = MemberCreate.builder()
-                .email("test@case.com")
-                .name("테스터")
+                .email("test@never.com")
+                .nickname("테스터")
 //                .phone("02-1234-5678")
 //                .phone("010-1234-523678")
                 .phone("010-21234-5678")
@@ -134,12 +147,12 @@ class MemberControllerTest {
 
     @Test
     @DisplayName("회원 가입 시 비밀번호 양식에 맞지 않으면 오류를 리턴")
-    void 회원_비밀번호_검증() throws Exception {
+    void VALID_MEMBER_PASSWORD() throws Exception {
 
         // given
         MemberCreate member = MemberCreate.builder()
-                .email("test@case.com")
-                .name("테스터")
+                .email("test@never.com")
+                .nickname("테스터")
                 .phone("010-2124-5678")
 //                .password("tester12")
                 .password("test12#")
@@ -160,29 +173,42 @@ class MemberControllerTest {
 
     @Test
     @DisplayName("회원 수정 테스트")
-    void 회원_수정_테스트() throws Exception {
+    void MEMBER_EDIT_TEST() throws Exception {
 
         // given
         Member member = Member.builder()
-                .email("test@case.com")
-                .name("테스터")
+                .email("test@never.com")
+                .nickname("테스터")
                 .phone("010-1234-5678")
                 .password("tester12#")
                 .build();
 
         memberRepository.save(member);
 
+        String accessToken = jwtTokenProvider.createAccessToken(member.getEmail());
+        System.out.println(accessToken);
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail());
+
+        Token token = Token.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .member(member)
+                .build();
+
+        tokenRepository.save(token);
+
+        Token savedToken = tokenRepository.findByMember(member).orElseThrow(TokenNotFoundException::new);
+
         // when
         MemberEdit memberEdit = MemberEdit.builder()
-                .name("테스터훈")
-                .phone("010-9876-5432")
-                .password("qwer123$")
+                .nickname("테스터훈")
                 .build();
 
         String jsonValue = objectMapper.writeValueAsString(memberEdit);
 
         // expected
         mockMvc.perform(patch("/members/{memberId}", member.getId())
+                        .header(AUTHORIZATION, savedToken.getAccessToken())
                         .contentType(APPLICATION_JSON)
                         .content(jsonValue))
                 .andExpect(status().isOk())
@@ -192,21 +218,36 @@ class MemberControllerTest {
 
     @Test
     @DisplayName("회원 삭제 테스트")
-    void 회원_탈퇴() throws Exception {
+    void MEMBER_DELETE() throws Exception {
 
         // given
         Member member = Member.builder()
-                .email("test@case.com")
-                .name("테스터")
+                .email("test@never.com")
+                .nickname("테스터")
                 .phone("010-1234-5678")
                 .password("tester12#")
                 .build();
 
         memberRepository.save(member);
 
+        String accessToken = jwtTokenProvider.createAccessToken(member.getEmail());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail());
+
+        Token token = Token.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .member(member)
+                .build();
+
+        tokenRepository.save(token);
+
+        Token savedToken = tokenRepository.findByMember(member).orElseThrow(TokenNotFoundException::new);
+
+
         // expected
         mockMvc.perform(delete("/members/{memberId}", member.getId())
-                .contentType(APPLICATION_JSON))
+                        .header(AUTHORIZATION, savedToken.getAccessToken())
+                        .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
