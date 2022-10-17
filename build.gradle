@@ -49,6 +49,8 @@ dependencies {
 
     // Spring security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation group: 'org.springframework.security', name: 'spring-security-test', version: '5.7.3'
+
 
     // Spring docs
     asciidoctorExt "org.springframework.restdocs:spring-restdocs-asciidoctor:${asciidocVersion}"
