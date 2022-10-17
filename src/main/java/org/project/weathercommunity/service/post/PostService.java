@@ -13,7 +13,7 @@ import org.project.weathercommunity.request.post.PostEdit;
 import org.project.weathercommunity.request.post.PostSearch;
 import org.project.weathercommunity.response.post.PostListResponse;
 import org.project.weathercommunity.response.post.PostOneResponse;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +27,7 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    public void write(PostCreate postCreate, Authentication authentication) {
-
-        Member member = (Member) authentication.getPrincipal();
+    public void write(PostCreate postCreate, Member member) {
 
         if (member == null) {
             throw new MemberNotFoundException();
