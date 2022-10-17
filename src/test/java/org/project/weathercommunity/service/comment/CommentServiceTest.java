@@ -1,4 +1,4 @@
-package org.project.weathercommunity.controller.comment;
+package org.project.weathercommunity.service.comment;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import org.project.weathercommunity.repository.comment.CommentRepository;
 import org.project.weathercommunity.repository.post.PostRepository;
 import org.project.weathercommunity.request.comment.CommentCreate;
 import org.project.weathercommunity.response.comment.CommentResponse;
-import org.project.weathercommunity.service.comment.CommentService;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
@@ -27,7 +26,7 @@ import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-public class CommentControllerTest {
+public class CommentServiceTest {
 
     @Mock
     CommentRepository commentRepository;
@@ -53,15 +52,15 @@ public class CommentControllerTest {
     void COMMENT_WRITE(@Mock Authentication authentication) {
 
         // given
-        willReturn(member).given(authentication).getPrincipal();
         willReturn(comment).given(commentRepository).save(any());
+        willReturn(Optional.of(post)).given(postRepository).findById(any());
 
         // when
         commentService.write(commentCreate, member);
 
         // then
 //        then(commentService).should(times(1)).write(commentCreate, authentication);
-        then(postRepository).should(times(1)).getReferenceById(any());
+        then(postRepository).should(times(1)).findById(any());
 
         Comment savedComment = commentRepository.save(comment);
 
