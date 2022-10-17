@@ -25,7 +25,7 @@ public class Token {
     private Member member;
 
     @Builder
-    public Token(Long id, String accessToken, String refreshToken, Member member) {
+    public Token(String accessToken, String refreshToken, Member member) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.member = member;
