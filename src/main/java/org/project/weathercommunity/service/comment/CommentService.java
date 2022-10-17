@@ -27,9 +27,10 @@ public class CommentService {
     private final PostRepository postRepository;
 
     @Transactional
-    public void write(CommentCreate commentCreate, Authentication authentication) {
+    public void write(CommentCreate commentCreate, Member member) {
 
-        Member member = (Member) authentication.getPrincipal();
+        Post post = postRepository.findById(commentCreate.getPostId())
+                .orElseThrow(PostNotFoundException::new);
 
         if (member == null) {
             throw new MemberNotFoundException();
@@ -37,7 +38,7 @@ public class CommentService {
             // commentCreate -> Entity
             Comment comment = Comment.builder()
                     .content(commentCreate.getContent())
-                    .post(postRepository.getReferenceById(commentCreate.getPostId()))
+                    .post(post)
                     .member(member)
                     .build();
 
@@ -58,6 +59,8 @@ public class CommentService {
     }
 
     public void edit(Long id, CommentEdit commentEdit) {
+
+
 
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(PostNotFoundException::new);

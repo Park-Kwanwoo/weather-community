@@ -1,11 +1,12 @@
 package org.project.weathercommunity.controller.comment;
 
 import lombok.RequiredArgsConstructor;
+import org.project.weathercommunity.domain.member.Member;
 import org.project.weathercommunity.request.comment.CommentCreate;
 import org.project.weathercommunity.request.comment.CommentEdit;
 import org.project.weathercommunity.response.comment.CommentResponse;
 import org.project.weathercommunity.service.comment.CommentService;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,8 +19,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/comments/create")
-    public void comment(@RequestBody @Valid CommentCreate commentCreate, Authentication authentication) {
-        commentService.write(commentCreate, authentication);
+    public void comment(@RequestBody @Valid CommentCreate commentCreate, @AuthenticationPrincipal Member member) {
+        commentService.write(commentCreate, member);
     }
 
     @GetMapping("/comments")
