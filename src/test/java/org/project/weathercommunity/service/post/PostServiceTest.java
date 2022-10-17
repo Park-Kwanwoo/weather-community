@@ -71,16 +71,12 @@ class PostServiceTest {
         PostCreate postCreate = postCreate();
         Post post = toPostEntity(postCreate);
 
-        willReturn(member).given(authentication).getPrincipal();
         willReturn(post).given(postRepository).save(any());
 
         // when
-        postService.write(postCreate, authentication);
+        postService.write(postCreate, member);
 
         // then
-        then(postService).should().write(argThat(request -> request.getTitle().equals("제목")), argThat(authentication -> authentication.getPrincipal().equals(member)));
-        then(postService).should().write(argThat(request -> request.getContent().equals("내용")), argThat(authentication -> authentication.getPrincipal().equals(member)));
-
         assertEquals(postRepository.save(post).getContent(), postCreate.getContent());
         assertEquals(postRepository.save(post).getTitle(), postCreate.getTitle());
     }
