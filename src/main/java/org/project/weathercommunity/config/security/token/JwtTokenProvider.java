@@ -38,7 +38,6 @@ public class JwtTokenProvider {
 
     protected String createToken(String email, long tokenValid) {
 
-        log.info("createToken");
         // ex) sub: jwt@jwt.com
          /*
          payload에 해당하는 부분
