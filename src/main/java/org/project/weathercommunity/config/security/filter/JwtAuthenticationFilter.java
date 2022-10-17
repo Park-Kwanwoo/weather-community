@@ -101,9 +101,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 3. /members/join
         // 4. 나머지는 false
         return EXCLUDE_URL.stream().anyMatch(exclude -> {
-            if (exclude.equalsIgnoreCase(request.getServletPath())) {
+            if (exclude.equalsIgnoreCase(request.getRequestURI())) {
                 return true;
-            } else if (request.getServletPath().startsWith("/posts") && request.getMethod().equals("GET") && exclude.equalsIgnoreCase("/posts")) {
+            } else if (request.getRequestURI().startsWith("/posts") && request.getMethod().equals("GET") && exclude.equalsIgnoreCase("/posts")) {
                 return true;
             } else {
                 return false;
