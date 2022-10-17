@@ -1,5 +1,6 @@
 package org.project.weathercommunity.exception;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 /**
  * status -> 404
  */
@@ -16,6 +17,6 @@ public class PostNotFoundException extends WeatherCommunityException {
 
     @Override
     public int getStatusCode() {
-        return 404;
+        return NOT_FOUND.value();
     }
 }
