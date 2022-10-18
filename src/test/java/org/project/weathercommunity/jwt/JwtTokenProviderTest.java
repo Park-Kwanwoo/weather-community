@@ -18,7 +18,7 @@ public class JwtTokenProviderTest {
 
     @Test
     @DisplayName("토큰 발행 테스트")
-    void 토큰_발행() {
+    void CREATE_TOKEN() {
 
         // given
         JwtTokenProvider jwtTokenProvider =
@@ -27,8 +27,7 @@ public class JwtTokenProviderTest {
         String email = "test@case.com";
 
         // when
-        String accessToken = jwtTokenProvider.createAccessToken(email);
-
+        String accessToken = jwtTokenProvider.createAccessToken(email).substring(7);
 
         //then
         assertEquals("test@case.com", jwtTokenProvider.getMemberEmailByToken(accessToken));
@@ -37,7 +36,7 @@ public class JwtTokenProviderTest {
 
     @Test
     @DisplayName("토큰 만료 시간 테스트")
-    void 토큰_만료() throws InterruptedException {
+    void EXPIRE_TOKEN() throws InterruptedException {
 
         // given
         JwtTokenProvider jwtTokenProvider =
