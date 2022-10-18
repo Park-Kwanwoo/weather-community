@@ -1,11 +1,18 @@
 package org.project.weathercommunity.controller.post;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.project.weathercommunity.config.security.token.JwtTokenProvider;
+import org.project.weathercommunity.domain.member.Member;
 import org.project.weathercommunity.domain.post.Post;
+import org.project.weathercommunity.domain.token.Token;
+import org.project.weathercommunity.repository.member.MemberRepository;
 import org.project.weathercommunity.repository.post.PostRepository;
+import org.project.weathercommunity.repository.token.TokenRepository;
+import org.project.weathercommunity.request.member.MemberCreate;
 import org.project.weathercommunity.request.post.PostCreate;
 import org.project.weathercommunity.request.post.PostEdit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +20,10 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -41,28 +50,91 @@ public class PostControllerDocTest {
 // Test 케이스 실행 -> 문서를 생성
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @Autowired
     PostRepository postRepository;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    MemberRepository memberRepository;
 
-    @Test
-    @DisplayName("글 단건 조회 테스트")
-    void 글_단건_조회_Doc() throws Exception {
+    @Autowired
+    TokenRepository tokenRepository;
 
-        // given
-        Post request = Post.builder()
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    private MemberCreate memberCreate() {
+        return MemberCreate.builder() .email("test@case.com")
+                .nickname("테스터")
+                .phone("010-2314-1232")
+                .password("tester12#")
+                .build();
+    }
+
+    private Member toMember(MemberCreate memberCreate) {
+        return Member.builder()
+                .email(memberCreate.getEmail())
+                .nickname(memberCreate.getNickname())
+                .phone(memberCreate.getPhone())
+                .password(passwordEncoder.encode(memberCreate().getPassword()))
+                .build();
+    }
+
+
+    private Token createToken(Member member) {
+        return Token.builder()
+                .accessToken(jwtTokenProvider.createAccessToken(member.getEmail()))
+                .refreshToken(jwtTokenProvider.createRefreshToken(member.getEmail()))
+                .member(member)
+                .build();
+    }
+
+    private PostCreate postCreate() {
+        return PostCreate.builder()
                 .title("제목")
                 .content("내용")
                 .build();
+    }
 
-        postRepository.save(request);
+    private Post toPost(PostCreate postCreate, Member member) {
+        return Post.builder()
+                .title(postCreate.getTitle())
+                .content(postCreate.getContent())
+                .member(member)
+                .build();
+    }
+
+    @BeforeEach
+    void clean() {
+        memberRepository.deleteAll();
+        tokenRepository.deleteAll();
+        postRepository.deleteAll();
+    }
+
+    @Test
+    @DisplayName("글 단건 조회 DOCUMENT")
+    void GET_POST_ONE_DOCUMENT() throws Exception {
+
+        // given
+        MemberCreate memberCreate = memberCreate();
+        Member member = toMember(memberCreate);
+
+        memberRepository.save(member);
+
+        PostCreate postCreate = postCreate();
+        Post post = toPost(postCreate, member);
+        postRepository.save(post);
 
         // expected
-        this.mockMvc.perform(get("/posts/{postId}", 1L)
+        this.mockMvc.perform(get("/posts/{postId}", post.getId())
                         .accept(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -72,26 +144,34 @@ public class PostControllerDocTest {
                         responseFields(
                                 fieldWithPath("id").description("게시글 ID"),
                                 fieldWithPath("title").description("제목"),
-                                fieldWithPath("content").description("내용")
+                                fieldWithPath("content").description("내용"),
+                                fieldWithPath("createdTime").description("작성일"),
+                                fieldWithPath("memberId").description("회원 ID")
                         )
 
                 ));
     }
 
     @Test
-    @DisplayName("글 등록")
-    void 글_등록_Doc() throws Exception {
+    @DisplayName("글 등록 DOCUMENT")
+    void WRITE_POST_DOCUMENT() throws Exception {
 
         // given
-        PostCreate request = PostCreate.builder()
-                .title("제목")
-                .content("내용")
-                .build();
+        MemberCreate memberCreate = memberCreate();
+        Member member = toMember(memberCreate);
+        memberRepository.save(member);
 
-        String json = objectMapper.writeValueAsString(request);
+        Token token = createToken(member);
+        Token savedToken = tokenRepository.save(token);
+
+        PostCreate postCreate = postCreate();
+
+        String json = objectMapper.writeValueAsString(postCreate);
+
 
         // expected
         this.mockMvc.perform(post("/posts/create")
+                        .header(AUTHORIZATION, savedToken.getAccessToken())
                         .contentType(APPLICATION_JSON)
                         .accept(APPLICATION_JSON)
                         .content(json))
@@ -106,25 +186,30 @@ public class PostControllerDocTest {
     }
 
     @Test
-    @DisplayName("글 수정")
-    void 글_수정_Doc() throws Exception {
+    @DisplayName("글 수정 DOCUMENT")
+    void EDIT_POST_DOCUMENT() throws Exception {
 
         // given
-        Post post = Post.builder()
-                .title("제목 전")
-                .content("내용 전")
-                .build();
+        MemberCreate memberCreate = memberCreate();
+        Member member = toMember(memberCreate);
+        memberRepository.save(member);
 
+        Token token = createToken(member);
+        Token savedToken = tokenRepository.save(token);
+
+        PostCreate postCreate = postCreate();
+        Post post = toPost(postCreate, member);
 
         postRepository.save(post);
 
         PostEdit postEdit = PostEdit.builder()
-                .title("제목 후")
-                .content("내용 후")
+                .title("제목 수정")
+                .content("내용 수정")
                 .build();
 
         // expectd
         mockMvc.perform(patch("/posts/{postId}", post.getId())
+                        .header(AUTHORIZATION, savedToken.getAccessToken())
                         .accept(APPLICATION_JSON)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postEdit))
@@ -142,26 +227,34 @@ public class PostControllerDocTest {
     }
 
     @Test
-    @DisplayName("글 삭제")
-    void 글_삭제_Doc() throws Exception {
+    @DisplayName("글 삭제 DOCUMENT")
+    void DELETE_POST_DOCUMENT() throws Exception {
 
         // given
-        Post post = Post.builder()
-                .title("삭제할 포스트")
-                .content("삭제할 내용")
-                .build();
+        MemberCreate memberCreate = memberCreate();
+        Member member = toMember(memberCreate);
+        memberRepository.save(member);
+
+        Token token = createToken(member);
+        Token savedToken = tokenRepository.save(token);
+
+        PostCreate postCreate = postCreate();
+        Post post = toPost(postCreate, member);
+
+        postRepository.save(post);
 
 
         postRepository.save(post);
 
         // expectd
         mockMvc.perform(delete("/posts/{postId}", post.getId())
+                        .header(AUTHORIZATION, savedToken.getAccessToken())
                         .accept(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document("post-delete", pathParameters(
-                        parameterWithName("postId").description("게시글 ID")
+                        parameterWithName("postId").description("게시글 번호")
                 )));
     }
 }
