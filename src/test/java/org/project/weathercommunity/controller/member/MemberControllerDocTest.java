@@ -35,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "api.weathercommunity.com", uriPort = 443)
+@TestPropertySource(properties = {"spring.config.location = classpath:application-test.yml"})
 @ExtendWith(RestDocumentationExtension.class)
 public class MemberControllerDocTest {
 
