@@ -3,6 +3,9 @@ spring:
     activate:
       on-profile: prod
 
+  jpa:
+    hibernate:
+      ddl-auto: update
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://3.36.206.195:3306/weather_community
