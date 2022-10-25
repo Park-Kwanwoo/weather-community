@@ -104,13 +104,6 @@ jar {
 ext.profile = (!project.hasProperty('profile') || !profile) ? 'dev' : profile
 
 // 리소스 폴터
-sourceSets {
-    main {
-        resources {
-            srcDirs("src/main/resources", "src/main/resources/application-${profile}")
-        }
-    }
-}
 
 tasks {
 
