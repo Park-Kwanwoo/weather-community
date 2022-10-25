@@ -3,17 +3,17 @@ spring:
     console:
       enabled: true
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/weather-db
-    username: sa
-    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://3.36.206.195:3306/weather_community_test
+    username: test
+    password: Test123$
   jpa:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
     open-in-view: false
     properties:
-      hibernate:
+      hibernate:경
         format_sql: true
 
   # 페이지의 시작점을 0이 아닌 1로 설정(true)
