@@ -13,7 +13,7 @@ spring:
     show-sql: true
     open-in-view: false
     properties:
-      hibernate:경
+      hibernate:
         format_sql: true
 
   # 페이지의 시작점을 0이 아닌 1로 설정(true)
