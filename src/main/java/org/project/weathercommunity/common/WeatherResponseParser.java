@@ -2,25 +2,20 @@ package org.project.weathercommunity.common;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.project.weathercommunity.response.weather.WeatherResponse;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-@Slf4j
-@Component
 public class WeatherResponseParser {
 
-    public List<WeatherResponse> Parse(String data) throws ParseException {
+    public static List<WeatherResponse> Parse(String data) throws ParseException {
 
         // json 데이터 변환
         JSONParser jsonParser = new JSONParser();
@@ -45,7 +40,6 @@ public class WeatherResponseParser {
         String wsd;
 
 
-        log.info("파서");
         List<WeatherResponse> responseList = new ArrayList<>();
 
         // category 횟수 만큼 나눈다.

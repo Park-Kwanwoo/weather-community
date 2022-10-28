@@ -1,6 +1,5 @@
 package org.project.weathercommunity.service.weather;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
 import org.project.weathercommunity.common.GpsTransfer;
@@ -17,7 +16,6 @@ import java.util.Map;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class WeatherService {
 
     private static final String BASE_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0";
@@ -25,8 +23,6 @@ public class WeatherService {
     private static final String NUM_OF_ROWS = "60";
     private static final String PAGE_NO = "1";
     private static final String DATA_TYPE = "JSON";
-
-    private final WeatherResponseParser weatherResponseParser;
 
     public Mono<Object> ultraShortForecast(WeatherRequest weatherRequest) {
 
@@ -57,7 +53,7 @@ public class WeatherService {
                 .bodyToMono(String.class)
                 .map(s -> {
                     try {
-                        return weatherResponseParser.Parse(s);
+                        return WeatherResponseParser.Parse(s);
                     } catch (ParseException e) {
                         throw new RuntimeException(e);
                     }
