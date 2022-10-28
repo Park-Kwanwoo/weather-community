@@ -8,6 +8,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.project.weathercommunity.response.weather.WeatherResponse;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +17,10 @@ import java.util.List;
 @Getter
 @Setter
 @Slf4j
+@Component
 public class WeatherResponseParser {
 
-    public static List<WeatherResponse> Parse(String data) throws ParseException {
+    public List<WeatherResponse> Parse(String data) throws ParseException {
 
         // json 데이터 변환
         JSONParser jsonParser = new JSONParser();

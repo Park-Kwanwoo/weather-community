@@ -19,7 +19,7 @@ public class WeatherController {
     private final WeatherService weatherService;
 
     @GetMapping("/weather/forecast")
-    public Mono<String> ultraShortForecast(@ModelAttribute @Valid WeatherRequest weatherRequest) {
+    public Mono<Object> ultraShortForecast(@ModelAttribute @Valid WeatherRequest weatherRequest) {
         return weatherService.ultraShortForecast(weatherRequest);
     }
 }
