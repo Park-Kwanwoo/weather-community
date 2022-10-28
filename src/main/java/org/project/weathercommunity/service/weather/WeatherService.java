@@ -26,21 +26,17 @@ public class WeatherService {
 
     public Mono<Object> ultraShortForecast(WeatherRequest weatherRequest) {
 
-        log.info("서비스");
         DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(BASE_URL);
         factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
 
-        log.info("웹 클라이언트");
         WebClient webClient = WebClient.builder()
                 .uriBuilderFactory(factory)
                 .baseUrl(BASE_URL)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
 
-        log.info("트랜스퍼");
         Map<String, Integer> transfer = GpsTransfer.transfer(weatherRequest.getLongitude(), weatherRequest.getLatitude());
 
-        log.info("리턴");
         return webClient.get()
                 .uri(uriBuilder ->
                         uriBuilder.path("/getUltraSrtFcst")

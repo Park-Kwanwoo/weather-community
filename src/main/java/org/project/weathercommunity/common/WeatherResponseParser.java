@@ -42,6 +42,7 @@ public class WeatherResponseParser {
         String wsd;
 
 
+        log.info("파서");
         List<WeatherResponse> responseList = new ArrayList<>();
 
         // category 횟수 만큼 나눈다.
