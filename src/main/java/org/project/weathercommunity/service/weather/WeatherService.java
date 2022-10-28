@@ -24,7 +24,7 @@ public class WeatherService {
     private static final String PAGE_NO = "1";
     private static final String DATA_TYPE = "JSON";
 
-    public Mono<Object> ultraShortForecast(WeatherRequest weatherRequest) {
+    public Mono<String> ultraShortForecast(WeatherRequest weatherRequest) {
 
         DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(BASE_URL);
         factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
@@ -50,14 +50,7 @@ public class WeatherService {
                                 .queryParam("base_time", weatherRequest.getBaseTime())
                                 .build())
                 .retrieve()
-                .bodyToMono(String.class)
-                .map(s -> {
-                    try {
-                        return WeatherResponseParser.Parse(s);
-                    } catch (ParseException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+                .bodyToMono(String.class);
     }
 
 }
