@@ -26,38 +26,40 @@ public class WeatherService {
 
     public Mono<Object> ultraShortForecast(WeatherRequest weatherRequest) {
 
-        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(BASE_URL);
-        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
+//        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(BASE_URL);
+//        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
+//
+//        WebClient webClient = WebClient.builder()
+//                .uriBuilderFactory(factory)
+//                .baseUrl(BASE_URL)
+//                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+//                .build();
+//
+//        Map<String, Integer> transfer = GpsTransfer.transfer(weatherRequest.getLongitude(), weatherRequest.getLatitude());
+//
+//        return webClient.get()
+//                .uri(uriBuilder ->
+//                        uriBuilder.path("/getUltraSrtFcst")
+//                                .queryParam("serviceKey", SERVICE_KEY)
+//                                .queryParam("numOfRows", NUM_OF_ROWS)
+//                                .queryParam("pageNo", PAGE_NO)
+//                                .queryParam("dataType", DATA_TYPE)
+//                                .queryParam("nx", transfer.get("nx"))
+//                                .queryParam("ny", transfer.get("ny"))
+//                                .queryParam("base_date", weatherRequest.getBaseDate())
+//                                .queryParam("base_time", weatherRequest.getBaseTime())
+//                                .build())
+//                .retrieve()
+//                .bodyToMono(String.class)
+//                .map(s -> {
+//                    try {
+//                        return WeatherResponseParser.Parse(s);
+//                    } catch (ParseException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                });
 
-        WebClient webClient = WebClient.builder()
-                .uriBuilderFactory(factory)
-                .baseUrl(BASE_URL)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .build();
-
-        Map<String, Integer> transfer = GpsTransfer.transfer(weatherRequest.getLongitude(), weatherRequest.getLatitude());
-
-        return webClient.get()
-                .uri(uriBuilder ->
-                        uriBuilder.path("/getUltraSrtFcst")
-                                .queryParam("serviceKey", SERVICE_KEY)
-                                .queryParam("numOfRows", NUM_OF_ROWS)
-                                .queryParam("pageNo", PAGE_NO)
-                                .queryParam("dataType", DATA_TYPE)
-                                .queryParam("nx", transfer.get("nx"))
-                                .queryParam("ny", transfer.get("ny"))
-                                .queryParam("base_date", weatherRequest.getBaseDate())
-                                .queryParam("base_time", weatherRequest.getBaseTime())
-                                .build())
-                .retrieve()
-                .bodyToMono(String.class)
-                .map(s -> {
-                    try {
-                        return WeatherResponseParser.Parse(s);
-                    } catch (ParseException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+        return Mono.never();
     }
 
 }
