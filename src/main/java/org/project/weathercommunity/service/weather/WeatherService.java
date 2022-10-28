@@ -26,6 +26,7 @@ public class WeatherService {
 
     public Mono<Object> ultraShortForecast(WeatherRequest weatherRequest) {
 
+        log.info("서비스");
 //        DefaultUriBuilderFactory factory = new DefaultUriBuilderFactory(BASE_URL);
 //        factory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
 //
@@ -59,7 +60,7 @@ public class WeatherService {
 //                    }
 //                });
 
-        return Mono.never();
+        return null;
     }
 
 }
