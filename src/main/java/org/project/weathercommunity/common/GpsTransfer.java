@@ -3,7 +3,6 @@ package org.project.weathercommunity.common;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
@@ -12,7 +11,6 @@ import static java.lang.Math.*;
 @Getter
 @Setter
 @ToString
-@Slf4j
 public class GpsTransfer {
     private double lat; // gps로 반환받은 위도 (x좌표 값)
     private double lon; // gps로 반환받은 경도 (y좌표 값)
@@ -66,8 +64,6 @@ public class GpsTransfer {
         int x = (int) (floor(ra * sin(theta)) + XO);
 		int y = (int) (floor(ro - ra*cos(theta)) + YO);
 
-        log.info("nx = {}", x);
-        log.info("ny = {}", y);
         return Map.of("nx", x, "ny", y);
     }
 }

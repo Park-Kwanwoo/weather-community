@@ -1,6 +1,5 @@
 package org.project.weathercommunity.service.weather;
 
-import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
 import org.project.weathercommunity.common.GpsTransfer;
 import org.project.weathercommunity.common.WeatherResponseParser;
@@ -15,7 +14,6 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @Service
-@Slf4j
 public class WeatherService {
 
     private static final String BASE_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0";
