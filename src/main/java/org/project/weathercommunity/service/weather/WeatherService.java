@@ -40,7 +40,7 @@ public class WeatherService {
 
         log.info("nx = {}",transfer.get("nx"));
         log.info("ny = {}", transfer.get("ny"));
-        log.info("date = {}",weatherRequest.getBaseDate());
+        log.info("date = {}", weatherRequest.getBaseDate());
         log.info("time = {}", weatherRequest.getBaseTime());
         return webClient.get()
                 .uri(uriBuilder ->
