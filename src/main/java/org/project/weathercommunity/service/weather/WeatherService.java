@@ -1,5 +1,6 @@
 package org.project.weathercommunity.service.weather;
 
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
 import org.project.weathercommunity.common.GpsTransfer;
 import org.project.weathercommunity.common.WeatherResponseParser;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class WeatherService {
 
     private static final String BASE_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0";
@@ -35,6 +37,11 @@ public class WeatherService {
 
         Map<String, Integer> transfer = GpsTransfer.transfer(weatherRequest.getLongitude(), weatherRequest.getLatitude());
 
+
+        log.info("nx = {}",transfer.get("nx"));
+        log.info("ny = {}", transfer.get("ny"));
+        log.info("date = {}",weatherRequest.getBaseDate());
+        log.info("time = {}", weatherRequest.getBaseTime());
         return webClient.get()
                 .uri(uriBuilder ->
                         uriBuilder.path("/getUltraSrtFcst")
