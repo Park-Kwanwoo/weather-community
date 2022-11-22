@@ -40,15 +40,13 @@ public class MemberService {
         Member member = Member.builder()
                 .email(memberCreate.getEmail())
                 .nickname(memberCreate.getNickname())
-                .password(passwordEncoder.encode(memberCreate.getPassword()))
-                .phone(memberCreate.getPhone())
+                .password(memberCreate.getPassword() != null ? passwordEncoder.encode(memberCreate.getPassword()) : null)
+                .auth(memberCreate.getAuth())
                 .build();
 
         if (memberRepository.existsByEmail(member.getEmail())) {
             throw new MemberEmailDuplicationException("email", "이미 존재하는 이메일입니다.");
-        } else if (memberRepository.existsByNickname(member.getNickname())) {
-            throw new MemberNicknameDuplicationException("nickname", "이미 존재하는 닉넨임입니다.");
-        } else {
+        }  else {
             memberRepository.save(member);
         }
     }
@@ -88,7 +86,6 @@ public class MemberService {
         return MemberMypageResponse.builder()
                 .email(member.getEmail())
                 .nickname(member.getNickname())
-                .phone(member.getPhone())
                 .build();
 
     }
