@@ -15,12 +15,14 @@ public class MemberLogin {
     @NotBlank(message = "아이디를 입력해주세요")
     private String email;
 
-    @NotBlank(message = "비밀번호를 입력해주세요")
     private String password;
 
+    private String auth;
+
     @Builder
-    public MemberLogin(String email, String password) {
+    public MemberLogin(String email, String password, String auth) {
         this.email = email;
         this.password = password;
+        this.auth = auth;
     }
 }
