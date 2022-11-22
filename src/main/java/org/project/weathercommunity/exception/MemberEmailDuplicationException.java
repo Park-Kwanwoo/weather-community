@@ -4,7 +4,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 public class MemberEmailDuplicationException extends WeatherCommunityException {
 
-    private static final String MESSAGE = "사용할 수 없는 이메일입니다.";
+    private static final String MESSAGE = "중복된 이메일 입니다.";
 
     public MemberEmailDuplicationException() {
         super(MESSAGE);
@@ -15,7 +15,7 @@ public class MemberEmailDuplicationException extends WeatherCommunityException {
     }
 
     public MemberEmailDuplicationException(String fieldName, String message) {
-        super(MESSAGE);
+        super(message);
         addValidation(fieldName, message);
     }
 
