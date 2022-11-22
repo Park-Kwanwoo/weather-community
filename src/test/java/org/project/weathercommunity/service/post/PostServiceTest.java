@@ -44,7 +44,6 @@ class PostServiceTest {
 
     Member member = Member.builder()
             .email("test@case.com")
-            .phone("010-1234-1234")
             .nickname("아무개")
             .build();
 

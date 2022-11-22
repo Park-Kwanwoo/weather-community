@@ -76,7 +76,6 @@ public class PostControllerDocTest {
     private MemberCreate memberCreate() {
         return MemberCreate.builder() .email("test@case.com")
                 .nickname("테스터")
-                .phone("010-2314-1232")
                 .password("tester12#")
                 .build();
     }
@@ -85,7 +84,6 @@ public class PostControllerDocTest {
         return Member.builder()
                 .email(memberCreate.getEmail())
                 .nickname(memberCreate.getNickname())
-                .phone(memberCreate.getPhone())
                 .password(passwordEncoder.encode(memberCreate().getPassword()))
                 .build();
     }

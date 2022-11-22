@@ -60,7 +60,6 @@ public class MemberControllerDocTest {
     private MemberCreate memberCreate() {
         return MemberCreate.builder() .email("test@case.com")
                 .nickname("테스터")
-                .phone("010-2314-1232")
                 .password("tester12#")
                 .build();
     }
@@ -69,7 +68,6 @@ public class MemberControllerDocTest {
         return Member.builder()
                 .email(memberCreate.getEmail())
                 .nickname(memberCreate.getNickname())
-                .phone(memberCreate.getPhone())
                 .password(passwordEncoder.encode(memberCreate().getPassword()))
                 .build();
     }
@@ -110,8 +108,8 @@ public class MemberControllerDocTest {
                                 fieldWithPath("email").description("이메일"),
                                 fieldWithPath("password").description("비밀번호"),
                                 fieldWithPath("nickname").description("닉네임"),
-                                fieldWithPath("phone").description("전화번호"),
-                                fieldWithPath("role").description("회원 등급")
+                                fieldWithPath("role").description("회원 등급"),
+                                fieldWithPath("auth").description("가입 경로")
 
                         )
                 ));

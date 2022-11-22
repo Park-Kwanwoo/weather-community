@@ -64,7 +64,6 @@ class MemberControllerTest {
         MemberCreate request = MemberCreate.builder()
                 .email("test@never.com")
                 .nickname("테스터")
-                .phone("010-1234-5678")
                 .password("tester12#")
                 .build();
 
@@ -87,7 +86,6 @@ class MemberControllerTest {
         );
         assertEquals("test@never.com", member.getEmail());
         assertEquals("테스터", member.getNickname());
-        assertEquals("010-1234-5678", member.getPhone());
         assertEquals(Role.ROLE_USER, member.getRole());
     }
 
@@ -101,7 +99,6 @@ class MemberControllerTest {
                 .email("@test.com")
 //                .email("test@never.com")
                 .nickname("테스터")
-                .phone("010-1234-5678")
                 .password("tester12#")
                 .build();
 
@@ -119,33 +116,6 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("회원 가입 시 전화번호 양식에 맞지 않으면 오류를 리턴")
-    void VALID_MEMBER_PHONE() throws Exception {
-
-        // given
-        MemberCreate member = MemberCreate.builder()
-                .email("test@never.com")
-                .nickname("테스터")
-//                .phone("02-1234-5678")
-//                .phone("010-1234-523678")
-                .phone("010-21234-5678")
-                .password("tester12#")
-                .build();
-
-        String jsonValue = objectMapper.writeValueAsString(member);
-
-        // expected
-        mockMvc.perform(post("/members/join")
-                        .contentType(APPLICATION_JSON)
-                        .content(jsonValue))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
-                .andExpect(jsonPath("$.validation.phone").value("전화번호 형식에 맞게 입력해주세요."))
-                .andDo(print());
-    }
-
-    @Test
     @DisplayName("회원 가입 시 비밀번호 양식에 맞지 않으면 오류를 리턴")
     void VALID_MEMBER_PASSWORD() throws Exception {
 
@@ -153,7 +123,6 @@ class MemberControllerTest {
         MemberCreate member = MemberCreate.builder()
                 .email("test@never.com")
                 .nickname("테스터")
-                .phone("010-2124-5678")
 //                .password("tester12")
                 .password("test12#")
                 .build();
@@ -179,7 +148,6 @@ class MemberControllerTest {
         Member member = Member.builder()
                 .email("test@never.com")
                 .nickname("테스터")
-                .phone("010-1234-5678")
                 .password("tester12#")
                 .build();
 
@@ -224,7 +192,6 @@ class MemberControllerTest {
         Member member = Member.builder()
                 .email("test@never.com")
                 .nickname("테스터")
-                .phone("010-1234-5678")
                 .password("tester12#")
                 .build();
 

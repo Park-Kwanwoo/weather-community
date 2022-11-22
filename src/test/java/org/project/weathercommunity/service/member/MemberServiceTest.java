@@ -43,7 +43,6 @@ class MemberServiceTest {
                 .email(memberCreate.getEmail())
                 .nickname(memberCreate.getNickname())
                 .password(passwordEncoder.encode(memberCreate.getPassword()))
-                .phone(memberCreate.getPhone())
                 .build();
     }
 
@@ -53,7 +52,6 @@ class MemberServiceTest {
                 .email("test@case.com")
                 .nickname("아이스아메리카노")
                 .password("qwer123$")
-                .phone("010-1234-1234")
                 .build();
     }
 
@@ -80,14 +78,12 @@ class MemberServiceTest {
         then(memberService).should().join(argThat(memberRequest -> memberRequest.getEmail().equals("test@case.com")));
         then(memberService).should().join(argThat(memberRequest -> memberRequest.getNickname().equals("아이스아메리카노")));
         then(memberService).should().join(argThat(memberRequest -> memberRequest.getPassword().equals("qwer123$")));
-        then(memberService).should().join(argThat(memberRequest -> memberRequest.getPhone().equals("010-1234-1234")));
 
         then(memberService).should(times(1)).join(memberCreate);
 
 
         assertEquals(memberCreate.getEmail(), savedMember.getEmail());
         assertEquals(memberCreate.getNickname(), savedMember.getNickname());
-        assertEquals(memberCreate.getPhone(), savedMember.getPhone());
         assertTrue(passwordEncoder.matches(memberCreate.getPassword(), savedMember.getPassword()));
 
     }
@@ -177,7 +173,6 @@ class MemberServiceTest {
 
         assertEquals(member.getEmail(), memberResponse.getEmail());
         assertEquals(member.getNickname(), memberResponse.getNickname());
-        assertEquals(member.getPhone(), memberResponse.getPhone());
 
     }
 }
