@@ -10,18 +10,15 @@ public class MemberMypageResponse {
     private final String email;
 
     private final String nickname;
-    private final String phone;
 
     public MemberMypageResponse(Member member) {
         this.email = member.getEmail();
         this.nickname = member.getNickname();
-        this.phone = member.getPhone();
     }
 
     @Builder
-    public MemberMypageResponse(String email, String nickname, String phone) {
+    public MemberMypageResponse(String email, String nickname) {
         this.email = email;
         this.nickname = nickname;
-        this.phone = phone;
     }
 }
