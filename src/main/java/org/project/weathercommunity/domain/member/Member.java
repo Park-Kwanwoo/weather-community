@@ -30,10 +30,10 @@ public class Member extends BaseTimeEntity {
 
     private String nickname;
 
-    private String phone;
-
     @Enumerated(value = EnumType.STRING)
     private Role role;
+
+    private String auth;
 
     @OneToMany(orphanRemoval = true, mappedBy = "member")
     private List<Post> posts = new ArrayList<>();
@@ -45,23 +45,21 @@ public class Member extends BaseTimeEntity {
     private Token token;
 
     @Builder
-    public Member(String email, String password, String nickname, String phone) {
+    public Member(String email, String password, String nickname, String auth) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
-        this.phone = phone;
         this.role = Role.ROLE_USER;
+        this.auth = auth;
     }
 
     public MemberEditor.MemberEditorBuilder toEditor() {
         return MemberEditor.builder()
-                .nickname(nickname)
-                .phone(phone);
+                .nickname(nickname);
     }
 
     public void edit(MemberEditor memberEditor) {
         this.nickname = memberEditor.getNickname();
-        this.phone = memberEditor.getPhone();
     }
 
     public PasswordEditor.PasswordEditorBuilder toPasswordEditor() {
