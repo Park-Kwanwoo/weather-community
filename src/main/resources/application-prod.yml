@@ -8,7 +8,7 @@ spring:
       ddl-auto: update
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://3.36.206.195:3306/weather_community
+    url: jdbc:mysql:13.209.61.237:3306/weather_community
     username: weather
     password: Weather1@
 
