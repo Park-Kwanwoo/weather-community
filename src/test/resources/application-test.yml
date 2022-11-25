@@ -4,9 +4,9 @@ spring:
       enabled: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://3.36.206.195:3306/weather_community_test
+    url: jdbc:mysql://13.209.61.237:3306/weather_community_test
     username: test
-    password: Test123$
+    password: Tester1@
   jpa:
     hibernate:
       ddl-auto: create-drop
