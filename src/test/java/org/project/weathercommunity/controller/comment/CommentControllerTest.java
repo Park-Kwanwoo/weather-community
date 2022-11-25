@@ -68,7 +68,7 @@ public class CommentControllerTest {
     }
 
     private Member saveMember() {
-        Member member = new Member("test@case.com", "qwer123$", "아무개", "010-1111-1111");
+        Member member = new Member("test@case.com", "qwer123$", "아무개", "");
         return memberRepository.save(member);
     }
 

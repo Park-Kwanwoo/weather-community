@@ -58,9 +58,11 @@ public class MemberControllerDocTest {
     PasswordEncoder passwordEncoder;
 
     private MemberCreate memberCreate() {
-        return MemberCreate.builder() .email("test@case.com")
+        return MemberCreate.builder()
+                .email("test@case.com")
                 .nickname("테스터")
                 .password("tester12#")
+                .auth("")
                 .build();
     }
 
@@ -108,8 +110,8 @@ public class MemberControllerDocTest {
                                 fieldWithPath("email").description("이메일"),
                                 fieldWithPath("password").description("비밀번호"),
                                 fieldWithPath("nickname").description("닉네임"),
-                                fieldWithPath("role").description("회원 등급"),
-                                fieldWithPath("auth").description("가입 경로")
+                                fieldWithPath("auth").description("가입 경로"),
+                                fieldWithPath("role").description("회원 등급")
 
                         )
                 ));
