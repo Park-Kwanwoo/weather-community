@@ -1,10 +1,7 @@
 spring:
-  h2:
-    console:
-      enabled: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://13.209.61.237:3306/weather_community_test
+    url: jdbc:mysql://localhost:3306/weather_community_test
     username: test
     password: Tester1@
   jpa:
